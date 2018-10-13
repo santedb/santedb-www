@@ -1,5 +1,4 @@
-﻿using MARC.HI.EHRS.SVC.Core;
-using SanteDB.Core.Model.Security;
+﻿using SanteDB.Core.Model.Security;
 using SanteDB.DisconnectedClient.Core.Configuration;
 using SanteDB.DisconnectedClient.UI;
 using SanteDB.DisconnectedClient.Xamarin;

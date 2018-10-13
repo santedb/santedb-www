@@ -78,6 +78,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Applets\org.santedb.config.init.pak">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Applets\org.santedb.config.pak">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -92,14 +95,25 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MARC.HI.EHRS.SVC.Core">
-      <Version>2.0.2</Version>
-    </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
+    <ProjectReference Include="..\reportr\SanteDB.ReportR\SanteDB.ReportR.csproj">
+      <Project>{39a382d5-a4a1-415a-8ceb-618177e23fac}</Project>
+      <Name>SanteDB.ReportR</Name>
+    </ProjectReference>
     <ProjectReference Include="..\santedb-api\SanteDB.Core.Api\SanteDB.Core.Api.csproj">
       <Project>{3A45F695-47A2-464C-ACE6-BDABBFA39FBC}</Project>
       <Name>SanteDB.Core.Api</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\santedb-applets\SanteDB.Core.Applets\SanteDB.Core.Applets.csproj">
+      <Project>{39e61451-f4fe-493d-b754-5f06eb284aac}</Project>
+      <Name>SanteDB.Core.Applets</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\santedb-bre-js\SanteDB.BusinessRules.JavaScript\SanteDB.BusinessRules.JavaScript.csproj">
+      <Project>{3bfd6ee6-0267-4d82-be7d-9b48b2f6f3d4}</Project>
+      <Name>SanteDB.BusinessRules.JavaScript</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\santedb-cdss\SanteDB.Cdss.Xml\SanteDB.Cdss.Xml.csproj">
+      <Project>{cad6bcb7-758b-4aa4-a5fe-a9fab8a4cf2f}</Project>
+      <Name>SanteDB.Cdss.Xml</Name>
     </ProjectReference>
     <ProjectReference Include="..\santedb-dc-core\SanteDB.DisconnectedClient.Core\SanteDB.DisconnectedClient.Core.csproj">
       <Project>{554DF209-7744-433F-993A-783E2A2803EF}</Project>
@@ -117,6 +131,9 @@
       <Project>{F1A82A4F-4A57-47D7-AE76-444C8A4FF54A}</Project>
       <Name>SanteDB.Core.Model</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="lib\shim.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'SignedRelease|AnyCPU'">
