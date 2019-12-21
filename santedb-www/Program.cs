@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2015-2018 Mohawk College of Applied Arts and Technology
+ * Copyright 2015-2019 Mohawk College of Applied Arts and Technology
  *
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you 
@@ -14,8 +14,8 @@
  * License for the specific language governing permissions and limitations under 
  * the License.
  * 
- * User: justin
- * Date: 2018-10-14
+ * User: Justin Fyfe
+ * Date: 2019-8-8
  */
 using MohawkCollege.Util.Console.Parameters;
 using SanteDB.Core.Configuration;
@@ -52,6 +52,17 @@ namespace santedb_www
         /// </summary>
         static void Main(String[] args)
         {
+
+            AppDomain.CurrentDomain.AssemblyResolve += (o, e) =>
+            {
+                string pAsmName = e.Name;
+                if (pAsmName.Contains(","))
+                    pAsmName = pAsmName.Substring(0, pAsmName.IndexOf(","));
+
+                var asm = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => e.Name == a.FullName) ??
+                    AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => pAsmName == a.GetName().Name);
+                return asm;
+            };
 
             // Output main header
             var parser = new ParameterParser<ConsoleParameters>();
@@ -162,12 +173,15 @@ namespace santedb_www
                 }
                 else
                 {
+                    Trace.TraceInformation("Starting as Windows Service");
                     ServiceBase[] ServicesToRun;
                     ServicesToRun = new ServiceBase[]
                     {
                         new SanteDbService(parms.InstanceName, applicationIdentity)
                     };
                     ServiceBase.Run(ServicesToRun);
+                    Trace.TraceInformation("Started As Windows Service...");
+
                 }
             }
             catch (Exception e)

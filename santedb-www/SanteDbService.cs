@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2015-2018 Mohawk College of Applied Arts and Technology
+ * Copyright 2015-2019 Mohawk College of Applied Arts and Technology
  *
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you 
@@ -14,8 +14,8 @@
  * License for the specific language governing permissions and limitations under 
  * the License.
  * 
- * User: justin
- * Date: 2018-10-14
+ * User: Justin Fyfe
+ * Date: 2019-8-8
  */
 using SanteDB.Core.Model.Security;
 using SanteDB.DisconnectedClient.Core.Configuration;
@@ -31,6 +31,9 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
 using SanteDB.Core.Configuration;
+using SanteDB.Core;
+using SanteDB.Core.Services;
+using System.Security.Principal;
 
 namespace santedb_www
 {
@@ -55,16 +58,23 @@ namespace santedb_www
         /// <param name="args">Data passed by the start command.</param>
         protected override void OnStart(string[] args)
         {
-            XamarinApplicationContext.ProgressChanged += (o, e) =>
+            try
             {
-                Trace.TraceInformation(">>> PROGRESS >>> {0} : {1:#0%}", e.ProgressText, e.Progress);
-            };
+                XamarinApplicationContext.ProgressChanged += (o, e) =>
+                {
+                    Trace.TraceInformation(">>> PROGRESS >>> {0} : {1:#0%}", e.ProgressText, e.Progress);
+                };
 
-            if (!DcApplicationContext.StartContext(new ConsoleDialogProvider(), $"www-{this.ServiceName}", this.m_applicationIdentity))
-                DcApplicationContext.StartTemporary(new ConsoleDialogProvider(), $"www-{this.ServiceName}", this.m_applicationIdentity);
+                if (!DcApplicationContext.StartContext(new ConsoleDialogProvider(), $"www-{this.ServiceName}", this.m_applicationIdentity))
+                    DcApplicationContext.StartTemporary(new ConsoleDialogProvider(), $"www-{this.ServiceName}", this.m_applicationIdentity);
+                DcApplicationContext.Current.Configuration.GetSection<ApplicationServiceContextConfigurationSection>().AppSettings.RemoveAll(o => o.Key == "http.bypassMagic");
+                DcApplicationContext.Current.Configuration.GetSection<ApplicationServiceContextConfigurationSection>().AppSettings.Add(new AppSettingKeyValuePair() { Key = "http.bypassMagic", Value = DcApplicationContext.Current.ExecutionUuid.ToString() });
 
-            DcApplicationContext.Current.Configuration.GetSection<ApplicationServiceContextConfigurationSection>().AppSettings.RemoveAll(o => o.Key == "http.bypassMagic");
-            DcApplicationContext.Current.Configuration.GetSection<ApplicationServiceContextConfigurationSection>().AppSettings.Add(new AppSettingKeyValuePair() { Key = "http.bypassMagic", Value = DcApplicationContext.Current.ExecutionUuid.ToString() });
+            }
+            catch(Exception e)
+            {
+                Trace.TraceError("The service reported an error: {0}", e);
+            }
         }
 
         /// <summary>
@@ -72,6 +82,7 @@ namespace santedb_www
         /// </summary>
         protected override void OnStop()
         {
+            Trace.TraceInformation("Stopping Service");
             DcApplicationContext.Current.Stop();
         }
     }

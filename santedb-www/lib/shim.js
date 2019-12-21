@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2015-2018 Mohawk College of Applied Arts and Technology
+ * Copyright 2015-2019 Mohawk College of Applied Arts and Technology
  *
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you 
@@ -14,8 +14,8 @@
  * License for the specific language governing permissions and limitations under 
  * the License.
  * 
- * User: justin
- * Date: 2018-10-14
+ * User: Justin Fyfe
+ * Date: 2019-8-8
  */
 
 // SanteDB Self-Hosted SHIM
@@ -32,6 +32,7 @@ __SanteDBAppService.GetOnlineState = function () {
     return true;
 }
 
+
 __SanteDBAppService.IsAdminAvailable = function () {
     return true;
 }
@@ -39,6 +40,7 @@ __SanteDBAppService.IsAdminAvailable = function () {
 __SanteDBAppService.IsClinicalAvailable = function () {
     return true;
 }
+
 
 __SanteDBAppService.BarcodeScan = function () {
     return SanteDBApplicationService.NewGuid().substring(0, 8);
@@ -56,7 +58,7 @@ __SanteDBAppService.GetLocale = function () {
 __SanteDBAppService.NewGuid = function () {
     var retVal = "";
     $.ajax({
-        url: "/__app/uuid",
+        url: "/app/Uuid",
         success: function (data) { retVal = data; },
         async: false
     });
