@@ -53,17 +53,7 @@ namespace santedb_www
         static void Main(String[] args)
         {
 
-            AppDomain.CurrentDomain.AssemblyResolve += (o, e) =>
-            {
-                string pAsmName = e.Name;
-                if (pAsmName.Contains(","))
-                    pAsmName = pAsmName.Substring(0, pAsmName.IndexOf(","));
-
-                var asm = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => e.Name == a.FullName) ??
-                    AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => pAsmName == a.GetName().Name);
-                return asm;
-            };
-
+         
             // Output main header
             var parser = new ParameterParser<ConsoleParameters>();
             var parms = parser.Parse(args);
@@ -74,6 +64,17 @@ namespace santedb_www
             Console.WriteLine("SanteDB Disconnected Server (SanteDB) {0} ({1})", entryAsm.GetName().Version, entryAsm.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion);
             Console.WriteLine("{0}", entryAsm.GetCustomAttribute<AssemblyCopyrightAttribute>().Copyright);
             Console.WriteLine("Complete Copyright information available at http://github.com/santedb/santedb-www");
+
+            AppDomain.CurrentDomain.AssemblyResolve += (o, e) =>
+            {
+                string pAsmName = e.Name;
+                if (pAsmName.Contains(","))
+                    pAsmName = pAsmName.Substring(0, pAsmName.IndexOf(","));
+
+                var asm = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => e.Name == a.FullName) ??
+                    AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => pAsmName == a.GetName().Name);
+                return asm;
+            };
 
             try
             {
