@@ -65,8 +65,8 @@ namespace santedb_www
                     Trace.TraceInformation(">>> PROGRESS >>> {0} : {1:#0%}", e.ProgressText, e.Progress);
                 };
 
-                if (!DcApplicationContext.StartContext(new ConsoleDialogProvider(), $"www-{this.ServiceName}", this.m_applicationIdentity))
-                    DcApplicationContext.StartTemporary(new ConsoleDialogProvider(), $"www-{this.ServiceName}", this.m_applicationIdentity);
+                if (!DcApplicationContext.StartContext(new ConsoleDialogProvider(), $"www-{this.ServiceName}", this.m_applicationIdentity, SanteDBHostType.Other))
+                    DcApplicationContext.StartTemporary(new ConsoleDialogProvider(), $"www-{this.ServiceName}", this.m_applicationIdentity, SanteDBHostType.Other);
                 DcApplicationContext.Current.Configuration.GetSection<ApplicationServiceContextConfigurationSection>().AppSettings.RemoveAll(o => o.Key == "http.bypassMagic");
                 DcApplicationContext.Current.Configuration.GetSection<ApplicationServiceContextConfigurationSection>().AppSettings.Add(new AppSettingKeyValuePair() { Key = "http.bypassMagic", Value = DcApplicationContext.Current.ExecutionUuid.ToString() });
 

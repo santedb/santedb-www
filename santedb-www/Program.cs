@@ -135,8 +135,8 @@ namespace santedb_www
                         Console.ResetColor();
                     };
 
-                    if (!DcApplicationContext.StartContext(new ConsoleDialogProvider(), $"www-{parms.InstanceName}", applicationIdentity))
-                        DcApplicationContext.StartTemporary(new ConsoleDialogProvider(), $"www-{parms.InstanceName}", applicationIdentity);
+                    if (!DcApplicationContext.StartContext(new ConsoleDialogProvider(), $"www-{parms.InstanceName}", applicationIdentity, SanteDB.Core.SanteDBHostType.Other))
+                        DcApplicationContext.StartTemporary(new ConsoleDialogProvider(), $"www-{parms.InstanceName}", applicationIdentity, SanteDB.Core.SanteDBHostType.Other);
 
                     DcApplicationContext.Current.Configuration.GetSection<ApplicationServiceContextConfigurationSection>().AppSettings.RemoveAll(o => o.Key == "http.bypassMagic");
                     DcApplicationContext.Current.Configuration.GetSection<ApplicationServiceContextConfigurationSection>().AppSettings.Add(new AppSettingKeyValuePair() { Key = "http.bypassMagic", Value = DcApplicationContext.Current.ExecutionUuid.ToString() });
