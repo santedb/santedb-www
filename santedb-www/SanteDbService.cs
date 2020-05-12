@@ -18,9 +18,8 @@
  * Date: 2019-8-8
  */
 using SanteDB.Core.Model.Security;
-using SanteDB.DisconnectedClient.Core.Configuration;
+using SanteDB.DisconnectedClient.Configuration;
 using SanteDB.DisconnectedClient.UI;
-using SanteDB.DisconnectedClient.Xamarin;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -34,6 +33,7 @@ using SanteDB.Core.Configuration;
 using SanteDB.Core;
 using SanteDB.Core.Services;
 using System.Security.Principal;
+using SanteDB.DisconnectedClient;
 
 namespace santedb_www
 {
@@ -60,7 +60,7 @@ namespace santedb_www
         {
             try
             {
-                XamarinApplicationContext.ProgressChanged += (o, e) =>
+                ApplicationContext.ProgressChanged += (o, e) =>
                 {
                     Trace.TraceInformation(">>> PROGRESS >>> {0} : {1:#0%}", e.ProgressText, e.Progress);
                 };
@@ -74,6 +74,8 @@ namespace santedb_www
             catch(Exception e)
             {
                 Trace.TraceError("The service reported an error: {0}", e);
+                Environment.FailFast($"Error starting WWW service: {e.Message}");
+
             }
         }
 
@@ -82,8 +84,16 @@ namespace santedb_www
         /// </summary>
         protected override void OnStop()
         {
-            Trace.TraceInformation("Stopping Service");
-            DcApplicationContext.Current.Stop();
+            try
+            {
+                Trace.TraceInformation("Stopping Service");
+                DcApplicationContext.Current.Stop();
+            }
+            catch(Exception e)
+            {
+                Trace.TraceError("The service reported an error: {0}", e);
+                Environment.FailFast($"Error stopping WWW service: {e.Message}");
+            }
         }
     }
 }

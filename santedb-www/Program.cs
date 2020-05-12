@@ -21,11 +21,11 @@ using MohawkCollege.Util.Console.Parameters;
 using SanteDB.Core.Configuration;
 using SanteDB.Core.Diagnostics;
 using SanteDB.Core.Model.Security;
-using SanteDB.DisconnectedClient.Core.Configuration;
+using SanteDB.DisconnectedClient.Configuration;
 using SanteDB.DisconnectedClient.UI;
-using SanteDB.DisconnectedClient.Xamarin;
-using SanteDB.DisconnectedClient.Xamarin.Diagnostics;
-using SanteDB.DisconnectedClient.Xamarin.Security;
+using SanteDB.DisconnectedClient;
+using SanteDB.DisconnectedClient.Diagnostics;
+using SanteDB.DisconnectedClient.Security;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -120,6 +120,15 @@ namespace santedb_www
 
                 if (parms.ShowHelp)
                     parser.WriteHelp(Console.Out);
+                else if(parms.Reset)
+                {
+                    var appData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SanteDB", parms.InstanceName);
+                    var cData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SanteDB", parms.InstanceName);
+                    if (Directory.Exists(appData)) Directory.Delete(cData, true);
+                    if (Directory.Exists(appData)) Directory.Delete(appData, true);
+                    Console.WriteLine("Environment Reset Successful");
+                    return;
+                }
                 else if (parms.ConsoleMode)
                 {
 #if DEBUG
@@ -128,7 +137,7 @@ namespace santedb_www
                     Tracer.AddWriter(new LogTraceWriter(System.Diagnostics.Tracing.EventLevel.LogAlways, "SanteDB.data"), System.Diagnostics.Tracing.EventLevel.LogAlways);
 #endif
 
-                    XamarinApplicationContext.ProgressChanged += (o, e) =>
+                    ApplicationContext.ProgressChanged += (o, e) =>
                     {
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.WriteLine(">>> PROGRESS >>> {0} : {1:#0%}", e.ProgressText, e.Progress);
