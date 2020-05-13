@@ -1,4 +1,4 @@
-# SanteDB WWW Online Only Host Environment
+# SanteDB Applet Web Host Environment
 
 This project provide a runtime environment for hosting [SanteDB Applets](https://help.santesuite.org/ops/santedb/applets) and all their assets in an environment where multiple clients need to access SanteDB user interfaces on a local area network or wide area network.
 
