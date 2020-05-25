@@ -89,10 +89,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="SanteDB.DisconnectedClient.Ags">
-      <Version>2.0.6</Version>
+      <Version>2.0.13</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.DisconnectedClient.UI">
-      <Version>2.0.6</Version>
+      <Version>2.0.13</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
