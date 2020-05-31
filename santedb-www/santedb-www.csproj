@@ -7,7 +7,7 @@
     <ProjectGuid>{C646D24E-48FB-44E7-B104-0AAEA348537C}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>santedb_www</RootNamespace>
-    <AssemblyName>sdb-www</AssemblyName>
+    <AssemblyName>santedb-www</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -26,7 +26,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -35,7 +35,7 @@
     <StartupObject />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'SignedRelease|AnyCPU'">
-    <OutputPath>bin\SignedRelease\</OutputPath>
+    <OutputPath>..\bin\SignedRelease\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -43,6 +43,9 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MohawkCollege.Util.Console.Parameters">
@@ -89,48 +92,66 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="SanteDB.DisconnectedClient.Ags">
-      <Version>2.0.13</Version>
+      <Version>2.0.18</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.DisconnectedClient.UI">
-      <Version>2.0.13</Version>
+      <Version>2.0.18</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'SignedRelease|AnyCPU'">
     <PreBuildEvent>
-      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --optimize --compile --source="$(SolutionDir)..\applets\config.init" --output="$(TargetDir)\Applets\org.santedb.config.init.pak" --keyFile="$(SolutionDir)..\..\keys\org.openiz.core.pfx" --keyPassword="$(SolutionDir)..\..\keys\org.openiz.core.pass" --embedcert
-      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --optimize --compile --source="$(SolutionDir)..\applets\config" --output="$(TargetDir)\Applets\org.santedb.config.pak" --keyFile="$(SolutionDir)..\..\keys\org.openiz.core.pfx" --keyPassword="$(SolutionDir)..\..\keys\org.openiz.core.pass" --embedcert
-      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --optimize --compile --source="$(SolutionDir)..\applets\core" --output="$(TargetDir)\Applets\org.santedb.core.pak" --keyFile="$(SolutionDir)..\..\keys\org.openiz.core.pfx" --keyPassword="$(SolutionDir)..\..\keys\org.openiz.core.pass" --embedcert
-      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --optimize --compile --source="$(SolutionDir)..\applets\uicore" --output="$(TargetDir)\Applets\org.santedb.uicore.pak" --keyFile="$(SolutionDir)..\..\keys\org.openiz.core.pfx" --keyPassword="$(SolutionDir)..\..\keys\org.openiz.core.pass" --embedcert
-      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --optimize --compile --source="$(SolutionDir)..\applets\i18n\en" --output="$(TargetDir)\Applets\org.santedb.i18n.en.pak" --keyFile="$(SolutionDir)..\..\keys\org.openiz.core.pfx" --keyPassword="$(SolutionDir)..\..\keys\org.openiz.core.pass" --embedcert
-      copy "$(SolutionDir)\Solution Items\Net45\libeay32md.dll" "$(TargetDir)"
-      copy "$(SolutionDir)\Solution Items\Net45\SqlCipher.dll" "$(TargetDir)"
-      copy "$(SolutionDir)\Solution Items\Net45\SqlCipher.dll" "$(TargetDir)\sqlite3.dll"
+
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\admin" --output="$(TargetDir)\Applets\org.santedb.admin.pak"  --keyFile="$(SolutionDir)..\keys\org.openiz.core.pfx" --keyPassword="$(SolutionDir)..\..\keys\org.openiz.core.pass" --embedcert
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\config.init" --output="$(TargetDir)\Applets\org.santedb.config.init.pak" --keyFile="$(SolutionDir)..\keys\org.openiz.core.pfx" --keyPassword="$(SolutionDir)..\..\keys\org.openiz.core.pass" --embedcert
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\config" --output="$(TargetDir)\Applets\org.santedb.config.pak" --keyFile="$(SolutionDir)..\keys\org.openiz.core.pfx" --keyPassword="$(SolutionDir)..\..\keys\org.openiz.core.pass" --embedcert
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\core" --output="$(TargetDir)\Applets\org.santedb.core.pak" --keyFile="$(SolutionDir)..\keys\org.openiz.core.pfx" --keyPassword="$(SolutionDir)..\..\keys\org.openiz.core.pass" --embedcert
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\uicore" --output="$(TargetDir)\Applets\org.santedb.uicore.pak" --keyFile="$(SolutionDir)..\keys\org.openiz.core.pfx" --keyPassword="$(SolutionDir)..\..\keys\org.openiz.core.pass" --embedcert
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\bicore" --output="$(TargetDir)\Applets\org.santedb.bicore.pak" --keyFile="$(SolutionDir)..\keys\org.openiz.core.pfx" --keyPassword="$(SolutionDir)..\..\keys\org.openiz.core.pass" --embedcert
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\i18n.en" --output="$(TargetDir)\Applets\org.santedb.i18n.en.pak" --keyFile="$(SolutionDir)..\keys\org.openiz.core.pfx" --keyPassword="$(SolutionDir)..\..\keys\org.openiz.core.pass" --embedcert
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\santeguard\applet" --output="$(TargetDir)\Applets\org.santesuite.sg.pak" --keyFile="$(SolutionDir)..\keys\org.openiz.core.pfx" --keyPassword="$(SolutionDir)..\..\keys\org.openiz.core.pass" --embedcert
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\santedb-server\SanteDB.Messaging.HL7\applet" --output="$(TargetDir)\Applets\org.santedb.hl7.pak" --keyFile="$(SolutionDir)..\keys\org.openiz.core.pfx" --keyPassword="$(SolutionDir)..\..\keys\org.openiz.core.pass" --embedcert
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\santempi\applet" --output="$(TargetDir)\Applets\org.santedb.mpi.pak" --keyFile="$(SolutionDir)..\keys\org.openiz.core.pfx" --keyPassword="$(SolutionDir)..\..\keys\org.openiz.core.pass" --embedcert
+      copy "$(SolutionDir)\Solution Items\libeay32md.dll" "$(TargetDir)"
+      copy "$(SolutionDir)\Solution Items\SqlCipher.dll" "$(TargetDir)"
+      copy "$(SolutionDir)\Solution Items\SqlCipher.dll" "$(TargetDir)\sqlite3.dll"
 
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <PreBuildEvent>
-      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --optimize --compile --source="$(SolutionDir)..\applets\config.init" --output="$(TargetDir)\Applets\org.santedb.config.init.pak" 
-      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --optimize --compile --source="$(SolutionDir)..\applets\config" --output="$(TargetDir)\Applets\org.santedb.config.pak" 
-      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --optimize --compile --source="$(SolutionDir)..\applets\core" --output="$(TargetDir)\Applets\org.santedb.core.pak" 
-      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --optimize --compile --source="$(SolutionDir)..\applets\uicore" --output="$(TargetDir)\Applets\org.santedb.uicore.pak" 
-      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --optimize --compile --source="$(SolutionDir)..\applets\i18n\en" --output="$(TargetDir)\Applets\org.santedb.i18n.en.pak" 
 
-      copy "$(SolutionDir)\Solution Items\Net45\libeay32md.dll" "$(TargetDir)"
-      copy "$(SolutionDir)\Solution Items\Net45\SqlCipher.dll" "$(TargetDir)"
-      copy "$(SolutionDir)\Solution Items\Net45\SqlCipher.dll" "$(TargetDir)\sqlite3.dll"
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\admin" --output="$(TargetDir)\Applets\org.santedb.admin.pak"
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\config.init" --output="$(TargetDir)\Applets\org.santedb.config.init.pak"
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\config" --output="$(TargetDir)\Applets\org.santedb.config.pak"
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\core" --output="$(TargetDir)\Applets\org.santedb.core.pak"
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\uicore" --output="$(TargetDir)\Applets\org.santedb.uicore.pak"
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\bicore" --output="$(TargetDir)\Applets\org.santedb.bicore.pak"
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\i18n.en" --output="$(TargetDir)\Applets\org.santedb.i18n.en.pak"
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\santeguard\applet" --output="$(TargetDir)\Applets\org.santesuite.sg.pak"
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\santedb-server\SanteDB.Messaging.HL7\applet" --output="$(TargetDir)\Applets\org.santedb.hl7.pak"
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\santempi\applet" --output="$(TargetDir)\Applets\org.santedb.mpi.pak"
+      copy "$(SolutionDir)\Solution Items\libeay32md.dll" "$(TargetDir)"
+      copy "$(SolutionDir)\Solution Items\SqlCipher.dll" "$(TargetDir)"
+      copy "$(SolutionDir)\Solution Items\SqlCipher.dll" "$(TargetDir)\sqlite3.dll"
 
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PreBuildEvent>
-
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\admin" --output="$(TargetDir)\Applets\org.santedb.admin.pak"
       "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\config.init" --output="$(TargetDir)\Applets\org.santedb.config.init.pak"
       "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\config" --output="$(TargetDir)\Applets\org.santedb.config.pak"
       "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\core" --output="$(TargetDir)\Applets\org.santedb.core.pak"
       "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\uicore" --output="$(TargetDir)\Applets\org.santedb.uicore.pak"
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\bicore" --output="$(TargetDir)\Applets\org.santedb.bicore.pak"
       "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\i18n.en" --output="$(TargetDir)\Applets\org.santedb.i18n.en.pak"
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\santeguard\applet" --output="$(TargetDir)\Applets\org.santesuite.sg.pak"
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\santedb-server\SanteDB.Messaging.HL7\applet" --output="$(TargetDir)\Applets\org.santedb.hl7.pak"
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\santempi\applet" --output="$(TargetDir)\Applets\org.santedb.mpi.pak"
       copy "$(SolutionDir)\Solution Items\libeay32md.dll" "$(TargetDir)"
       copy "$(SolutionDir)\Solution Items\SqlCipher.dll" "$(TargetDir)"
       copy "$(SolutionDir)\Solution Items\SqlCipher.dll" "$(TargetDir)\sqlite3.dll"
