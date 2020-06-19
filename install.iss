@@ -4,7 +4,7 @@
 #define MyAppName "SanteDB Web Portal Host"
 #define MyAppPublisher "SanteDB Community"
 #define MyAppURL "http://santesuite.org"
-#define MyAppVersion "2.0.18"
+#define MyAppVersion "2.0.21"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -74,6 +74,8 @@ Source: ".\bin\SignedRelease\System.Security.AccessControl.dll"; DestDir: "{app}
 Source: ".\bin\SignedRelease\System.Security.Permissions.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\bin\SignedRelease\System.Security.Principal.Windows.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\bin\SignedRelease\System.Text.Encoding.CodePages.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: ".\bin\SignedRelease\ZXing*.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: ".\bin\SignedRelease\CoreCompat*.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\bin\SignedRelease\fr\SanteDB.DisconnectedClient.i18n.resources.dll"; DestDir: "{app}\fr"; Flags: ignoreversion
 Source: ".\bin\SignedRelease\Applets\*.pak"; DestDir: "{app}\Applets"; Flags: ignoreversion
 Source: ".\bin\SignedRelease\santedb-www.exe"; DestDir: "{app}"; Flags: ignoreversion
