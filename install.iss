@@ -4,7 +4,7 @@
 #define MyAppName "SanteDB Web Portal Host"
 #define MyAppPublisher "SanteDB Community"
 #define MyAppURL "http://santesuite.org"
-#define MyAppVersion "2.0.26"
+#define MyAppVersion "2.0.30"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -29,6 +29,8 @@ DefaultGroupName={#MyAppName}
 WizardStyle=modern
 ;SignedUninstaller=yes
 ;SignTool=default
+SignedUninstaller=yes
+SignTool=default sign /a /n $qFyfe Software$q /tr http://tsa.starfieldtech.com /d $qSanteDB Web Portal Host$q $f
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -51,6 +53,8 @@ Source: ".\bin\SignedRelease\SanteDB.Core.Api.dll"; DestDir: "{app}"; Flags: ign
 Source: ".\bin\SignedRelease\SanteDB.Core.Applets.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\bin\SignedRelease\SanteDB.Core.Model.AMI.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\bin\SignedRelease\SanteDB.Core.Model.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: ".\bin\SignedRelease\SanteDB.Matcher.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: ".\bin\SignedRelease\SanteDB.OrmLite.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\bin\SignedRelease\SanteDB.Core.Model.RISI.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\bin\SignedRelease\SanteDB.Core.Model.ViewModelSerializers.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\bin\SignedRelease\SanteDB.DisconnectedClient.Ags.dll"; DestDir: "{app}"; Flags: ignoreversion
