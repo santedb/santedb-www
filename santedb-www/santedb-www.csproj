@@ -92,13 +92,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="SanteDB.DisconnectedClient.Ags">
-      <Version>2.0.30</Version>
+      <Version>2.0.35</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.DisconnectedClient.UI">
-      <Version>2.0.30</Version>
+      <Version>2.0.35</Version>
     </PackageReference>
     <PackageReference Include="SanteDB.Matcher">
-      <Version>2.0.30</Version>
+      <Version>2.0.35</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
