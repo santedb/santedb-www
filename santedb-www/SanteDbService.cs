@@ -69,15 +69,12 @@ namespace santedb_www
                     DcApplicationContext.StartTemporary(new ConsoleDialogProvider(), $"www-{this.ServiceName}", this.m_applicationIdentity, SanteDBHostType.Other);
                 DcApplicationContext.Current.Configuration.GetSection<ApplicationServiceContextConfigurationSection>().AppSettings.RemoveAll(o => o.Key == "http.bypassMagic");
                 DcApplicationContext.Current.Configuration.GetSection<ApplicationServiceContextConfigurationSection>().AppSettings.Add(new AppSettingKeyValuePair() { Key = "http.bypassMagic", Value = DcApplicationContext.Current.ExecutionUuid.ToString() });
-
             }
             catch(Exception e)
             {
                 Trace.TraceError("The service reported an error: {0}", e);
-                EventLog.WriteEntry("SanteDB Web Host", $"Service Startup reported an error: {e}", EventLogEntryType.Error, 1911);
-
+                EventLog.WriteEntry("SanteDB Portal Process", $"Service Startup reported an error: {e}", EventLogEntryType.Error, 1911);
                 Environment.FailFast($"Error starting WWW service: {e.Message}");
-
             }
         }
 
@@ -93,8 +90,7 @@ namespace santedb_www
             }
             catch(Exception e)
             {
-                EventLog.WriteEntry("SanteDB Web Host", $"Service Shutdown reported an error: {e}", EventLogEntryType.Error, 1911);
-
+                EventLog.WriteEntry("SanteDB Portal Process", $"Service Shutdown reported an error: {e}", EventLogEntryType.Error, 1911);
                 Trace.TraceError("The service reported an error: {0}", e);
                 Environment.FailFast($"Error stopping WWW service: {e.Message}");
             }

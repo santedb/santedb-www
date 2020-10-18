@@ -77,10 +77,16 @@ namespace santedb_www
 
             try
             {
+                // Detect platform
+                if (System.Environment.OSVersion.Platform != PlatformID.Win32NT)
+                    Trace.TraceWarning("Not running on WindowsNT, some features may not function correctly");
+                else if (!EventLog.SourceExists("SanteDB Portal Process"))
+                    EventLog.CreateEventSource("SanteDB Portal Process", "santedb-www");
 
                 // Security Application Information
                 var applicationIdentity = new SecurityApplication()
                 {
+                    Key = Guid.Parse("a0d2e3c5-a2d3-11ea-ad9f-00155d4f0905"),
                     ApplicationSecret = parms.ApplicationSecret ?? "SDB$$DEFAULT$$APPSECRET",
                     Name = parms.ApplicationName ?? "org.santedb.disconnected_client"
                 };
@@ -200,6 +206,8 @@ namespace santedb_www
                 Console.WriteLine("011 899 981 199 911 9725 3!!! {0}", e.ToString());
 #else
                 Trace.TraceError("Error encountered: {0}. Will terminate", e.Message);
+                EventLog.WriteEntry("SanteDB Portal Process", $"Fatal service error: {e}", EventLogEntryType.Error, 911);
+
 #endif
                 Environment.Exit(911);
             }
