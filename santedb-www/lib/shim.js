@@ -19,7 +19,7 @@
  */
 
 // SanteDB Self-Hosted SHIM
-setInterval(function () {
+setTimeout(function () {
     $.getJSON({
         url: "/app/Online",
         success: function (data) { __SanteDBAppService.state = data; }

@@ -4,7 +4,7 @@
 #define MyAppName "SanteDB Web Portal Host"
 #define MyAppPublisher "SanteDB Community"
 #define MyAppURL "http://santesuite.org"
-#define MyAppVersion "2.0.71"
+#define MyAppVersion "2.0.74"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
