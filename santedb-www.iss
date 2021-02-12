@@ -4,7 +4,7 @@
 #define MyAppName "SanteDB Web Portal Host"
 #define MyAppPublisher "SanteDB Community"
 #define MyAppURL "http://santesuite.org"
-#define MyAppVersion "2.0.75"
+#define MyAppVersion "2.0.80"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -39,48 +39,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: ".\bin\SignedRelease\Antlr3.Runtime.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\ExpressionEvaluator.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\Jint.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\libeay32md.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\esprima.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\MohawkCollege.Util.Console.Parameters.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\RestSrvr.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\SanteDB.BI.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\SanteDB.BusinessRules.JavaScript.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\SanteDB.Cdss.Xml.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\SanteDB.Core.Api.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\SanteDB.Core.Applets.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\SanteDB.Core.Model.AMI.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\SanteDB.Core.Model.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\SanteDB.Matcher.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\SanteDB.OrmLite.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\SanteDB.Core.Model.RISI.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\SanteDB.Core.Model.ViewModelSerializers.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\SanteDB.DisconnectedClient.Ags.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\SanteDB.DisconnectedClient.Core.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\SanteDB.DisconnectedClient.i18n.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\SanteDB.DisconnectedClient.UI.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\SanteDB.Messaging.AMI.Client.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\SanteDB.Messaging.HDSI.Client.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\SanteDB.Rest.AMI.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\SanteDB.Rest.BIS.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\SanteDB.Rest.Common.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\SanteDB.Rest.HDSI.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\SharpCompress.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\SqlCipher.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\System.Buffers.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\System.Diagnostics.PerformanceCounter.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\System.Memory.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\System.Numerics.Vectors.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\System.Runtime.CompilerServices.Unsafe.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\System.Security.AccessControl.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\System.Security.Permissions.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\System.Security.Principal.Windows.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\ZXing*.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\Esprima.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\fr\SanteDB.DisconnectedClient.i18n.resources.dll"; DestDir: "{app}\fr"; Flags: ignoreversion
+Source: ".\bin\SignedRelease\*.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\bin\SignedRelease\Applets\*.pak"; DestDir: "{app}\Applets"; Flags: ignoreversion
 Source: ".\bin\SignedRelease\santedb-www.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\bin\SignedRelease\santedb-www.exe.config"; DestDir: "{app}"; Flags: ignoreversion
