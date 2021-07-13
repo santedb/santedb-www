@@ -29,7 +29,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("santedb-www")]
-[assembly: AssemblyCopyright("Copyright ©  2020 Fyfe Software Inc.")]
+[assembly: AssemblyCopyright("Copyright (C) 2020-2021 SanteSuite Contributors (see NOTICE)")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -51,6 +51,6 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyInformationalVersion("Nanaimo")]
-[assembly: AssemblyVersion("2.0.80.*")]
-[assembly: AssemblyFileVersion("2.0.80.0")]
+[assembly: AssemblyInformationalVersion("Ottawa")]
+[assembly: AssemblyVersion("2.1.35.*")]
+[assembly: AssemblyFileVersion("2.1.35.0")]

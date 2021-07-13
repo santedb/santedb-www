@@ -4,7 +4,7 @@
 #define MyAppName "SanteDB Web Portal Host"
 #define MyAppPublisher "SanteDB Community"
 #define MyAppURL "http://santesuite.org"
-#define MyAppVersion "2.0.80"
+#define MyAppVersion "2.1.21"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -30,7 +30,7 @@ WizardStyle=modern
 ;SignedUninstaller=yes
 ;SignTool=default
 SignedUninstaller=yes
-SignTool=default sign /a /n $qFyfe Software$q /tr http://tsa.starfieldtech.com /d $qSanteDB Web Portal Host$q $f
+SignTool=default sign /a /n $qFyfe Software$q /d $q{#MyAppName}$q $f
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"

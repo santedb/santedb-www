@@ -18,6 +18,7 @@
  * Date: 2019-8-8
  */
 using MohawkCollege.Util.Console.Parameters;
+using Mono.Unix;
 using SanteDB.Core.Configuration;
 using SanteDB.Core.Diagnostics;
 using SanteDB.Core.Model.Security;
@@ -28,6 +29,7 @@ using SanteDB.DisconnectedClient.UI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Tracing;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -36,6 +38,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace santedb_www
@@ -46,23 +49,41 @@ namespace santedb_www
     [Guid("A97FB5DE-7627-401C-8E70-5B96C1A0073B")]
     static class Program
     {
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         static void Main(String[] args)
         {
 
-         
+
             // Output main header
             var parser = new ParameterParser<ConsoleParameters>();
             var parms = parser.Parse(args);
             parms.InstanceName = String.IsNullOrEmpty(parms.InstanceName) ? "default" : parms.InstanceName;
-            
+
             // Output copyright info
             var entryAsm = Assembly.GetEntryAssembly();
             Console.WriteLine("SanteDB Disconnected Server (SanteDB) {0} ({1})", entryAsm.GetName().Version, entryAsm.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion);
             Console.WriteLine("{0}", entryAsm.GetCustomAttribute<AssemblyCopyrightAttribute>().Copyright);
             Console.WriteLine("Complete Copyright information available at http://github.com/santedb/santedb-www");
+
+
+            // Parameters to force load?
+            if (parms.Force)
+                foreach (var itm in Directory.GetFiles(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "*.dll"))
+                {
+                    try
+                    {
+                        var asm = Assembly.LoadFile(itm);
+                        Console.WriteLine("Force Loaded {0}", asm.FullName);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("ERR: Cannot load {0} due to {1}", itm, e.Message);
+                    }
+                }
+
 
             AppDomain.CurrentDomain.AssemblyResolve += (o, e) =>
             {
@@ -125,7 +146,7 @@ namespace santedb_www
 
                 if (parms.ShowHelp)
                     parser.WriteHelp(Console.Out);
-                else if(parms.Reset)
+                else if (parms.Reset)
                 {
                     var appData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SanteDB", parms.InstanceName);
                     var cData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SanteDB", parms.InstanceName);
@@ -137,11 +158,11 @@ namespace santedb_www
                 else if (parms.ConsoleMode)
                 {
 #if DEBUG
-                    Tracer.AddWriter(new LogTraceWriter(System.Diagnostics.Tracing.EventLevel.LogAlways, "SanteDB.data"), System.Diagnostics.Tracing.EventLevel.LogAlways);
+                    Tracer.AddWriter(new LogTraceWriter(System.Diagnostics.Tracing.EventLevel.LogAlways, "SanteDB.data", new Dictionary<String, EventLevel>()), System.Diagnostics.Tracing.EventLevel.LogAlways);
 #else
-                    Tracer.AddWriter(new LogTraceWriter(System.Diagnostics.Tracing.EventLevel.LogAlways, "SanteDB.data"), System.Diagnostics.Tracing.EventLevel.LogAlways);
+                    Tracer.AddWriter(new LogTraceWriter(System.Diagnostics.Tracing.EventLevel.Informational, "SanteDB.data", new Dictionary<String, EventLevel>()), System.Diagnostics.Tracing.EventLevel.LogAlways);
 #endif
-
+                    Trace.Listeners.Add(new ConsoleTraceListener());
                     ApplicationContext.ProgressChanged += (o, e) =>
                     {
                         Console.ForegroundColor = ConsoleColor.White;
@@ -154,8 +175,39 @@ namespace santedb_www
 
                     DcApplicationContext.Current.Configuration.GetSection<ApplicationServiceContextConfigurationSection>().AppSettings.RemoveAll(o => o.Key == "http.bypassMagic");
                     DcApplicationContext.Current.Configuration.GetSection<ApplicationServiceContextConfigurationSection>().AppSettings.Add(new AppSettingKeyValuePair() { Key = "http.bypassMagic", Value = DcApplicationContext.Current.ExecutionUuid.ToString() });
-                    Console.WriteLine("Press [Enter] key to close...");
-                    Console.ReadLine();
+
+                    if (!parms.Forever)
+                    {
+                        Console.WriteLine("Press [Enter] key to close...");
+                        Console.ReadLine();
+                    }
+                    else
+                    {
+
+                        Console.WriteLine("Will run in nohup daemon mode...");
+                        if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+                        {
+                            // Wait until cancel key is pressed
+                            var mre = new ManualResetEventSlim(false);
+                            Console.CancelKeyPress += (o, e) => mre.Set();
+                            mre.Wait();
+                        }
+                        else
+                        {  // running on unix
+                           // Now wait until the service is exiting va SIGTERM or SIGSTOP
+                            UnixSignal[] signals = new UnixSignal[]
+                            {
+                                new UnixSignal(Mono.Unix.Native.Signum.SIGINT),
+                                new UnixSignal(Mono.Unix.Native.Signum.SIGTERM),
+                                new UnixSignal(Mono.Unix.Native.Signum.SIGQUIT),
+                                new UnixSignal(Mono.Unix.Native.Signum.SIGHUP)
+                            };
+                            Console.WriteLine("Started - Send SIGINT, SIGTERM, SIGQUIT or SIGHUP to PID {0} to terminate", Process.GetCurrentProcess().Id);
+                            int signal = UnixSignal.WaitAny(signals);
+                            
+                        }
+                    }
+                    Console.WriteLine("Received termination signal...");
                     DcApplicationContext.Current.Stop();
 
                 }
@@ -207,7 +259,7 @@ namespace santedb_www
 #else
                 Trace.TraceError("Error encountered: {0}. Will terminate", e);
                 EventLog.WriteEntry("SanteDB Portal Process", $"Fatal service error: {e}", EventLogEntryType.Error, 911);
-
+                Console.WriteLine("FATAL ERROR: {0}", e);
 #endif
                 Environment.Exit(911);
             }

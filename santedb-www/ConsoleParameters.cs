@@ -94,5 +94,20 @@ namespace santedb_www
         [Parameter("appsecret")]
         public String ApplicationSecret { get; set; }
 
+
+        /// <summary>
+        /// Start in noninteractive method
+        /// </summary>
+        [Description("Do not quit when the ENTER key is pressed")]
+        [Parameter("daemon")]
+        public bool Forever { get; internal set; }
+
+        /// <summary>
+        /// Force loading of DLLs
+        /// </summary>
+        [Description("Force the loading of DLLs (useful on some Linux distros)")]
+        [Parameter("dllForce")]
+        public bool Force { get; set; }
+
     }
 }
