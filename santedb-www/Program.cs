@@ -1,22 +1,23 @@
 ﻿/*
  * Portions Copyright 2015-2019 Mohawk College of Applied Arts and Technology
  * Portions Copyright 2019-2019 SanteSuite Contributors (See NOTICE)
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you 
- * may not use this file except in compliance with the License. You may 
- * obtain a copy of the License at 
- * 
- * http://www.apache.org/licenses/LICENSE-2.0 
- * 
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you
+ * may not use this file except in compliance with the License. You may
+ * obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the 
- * License for the specific language governing permissions and limitations under 
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
  * the License.
- * 
+ *
  * User: Justin Fyfe
  * Date: 2019-8-8
  */
+
 using MohawkCollege.Util.Console.Parameters;
 using Mono.Unix;
 using SanteDB.Core.Configuration;
@@ -47,16 +48,13 @@ namespace santedb_www
     /// Main SanteDB WWW Disconnected Server
     /// </summary>
     [Guid("A97FB5DE-7627-401C-8E70-5B96C1A0073B")]
-    static class Program
+    internal static class Program
     {
-
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        static void Main(String[] args)
+        private static void Main(String[] args)
         {
-
-
             // Output main header
             var parser = new ParameterParser<ConsoleParameters>();
             var parms = parser.Parse(args);
@@ -67,7 +65,6 @@ namespace santedb_www
             Console.WriteLine("SanteDB Disconnected Server (SanteDB) {0} ({1})", entryAsm.GetName().Version, entryAsm.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion);
             Console.WriteLine("{0}", entryAsm.GetCustomAttribute<AssemblyCopyrightAttribute>().Copyright);
             Console.WriteLine("Complete Copyright information available at http://github.com/santedb/santedb-www");
-
 
             // Parameters to force load?
             if (parms.Force)
@@ -83,7 +80,6 @@ namespace santedb_www
                         Console.WriteLine("ERR: Cannot load {0} due to {1}", itm, e.Message);
                     }
                 }
-
 
             AppDomain.CurrentDomain.AssemblyResolve += (o, e) =>
             {
@@ -101,8 +97,8 @@ namespace santedb_www
                 // Detect platform
                 if (System.Environment.OSVersion.Platform != PlatformID.Win32NT)
                     Trace.TraceWarning("Not running on WindowsNT, some features may not function correctly");
-                else if (!EventLog.SourceExists("SanteDB Portal Process"))
-                    EventLog.CreateEventSource("SanteDB Portal Process", "santedb-www");
+                else if (!EventLog.SourceExists("SanteDB"))
+                    EventLog.CreateEventSource("SanteDB", "santedb-www");
 
                 // Security Application Information
                 var applicationIdentity = new SecurityApplication()
@@ -143,7 +139,6 @@ namespace santedb_www
                     }
                 };
 
-
                 if (parms.ShowHelp)
                     parser.WriteHelp(Console.Out);
                 else if (parms.Reset)
@@ -183,7 +178,6 @@ namespace santedb_www
                     }
                     else
                     {
-
                         Console.WriteLine("Will run in nohup daemon mode...");
                         if (Environment.OSVersion.Platform == PlatformID.Win32NT)
                         {
@@ -204,12 +198,10 @@ namespace santedb_www
                             };
                             Console.WriteLine("Started - Send SIGINT, SIGTERM, SIGQUIT or SIGHUP to PID {0} to terminate", Process.GetCurrentProcess().Id);
                             int signal = UnixSignal.WaitAny(signals);
-                            
                         }
                     }
                     Console.WriteLine("Received termination signal...");
                     DcApplicationContext.Current.Stop();
-
                 }
                 else if (parms.Install)
                 {
@@ -248,7 +240,6 @@ namespace santedb_www
                     };
                     ServiceBase.Run(ServicesToRun);
                     Trace.TraceInformation("Started As Windows Service...");
-
                 }
             }
             catch (Exception e)
@@ -258,7 +249,7 @@ namespace santedb_www
                 Console.WriteLine("011 899 981 199 911 9725 3!!! {0}", e.ToString());
 #else
                 Trace.TraceError("Error encountered: {0}. Will terminate", e);
-                EventLog.WriteEntry("SanteDB Portal Process", $"Fatal service error: {e}", EventLogEntryType.Error, 911);
+                EventLog.WriteEntry("SanteDB", $"Fatal service error: {e}", EventLogEntryType.Error, 911);
                 Console.WriteLine("FATAL ERROR: {0}", e);
 #endif
                 Environment.Exit(911);
