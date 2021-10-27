@@ -47,7 +47,7 @@ echo Will use MSBUILD in %msbuild%
 		%signtool% sign /sha1 a11164321e30c84bd825ab20225421434622c52a /d "SanteDB dCDR" "%%G"
 	)
 	
-	%inno% "/o.\bin\dist" ".\installer\santedb-www.iss" /d"MyAppVersion=%version%" 
+	%inno% "/o.\bin\dist" ".\santedb-www.iss" /d"MyAppVersion=%version%" 
 	
 	rem ################# TARBALLS 
 	echo Building Linux Tarball
