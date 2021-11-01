@@ -140,14 +140,16 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <PreBuildEvent>
 
-      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\admin" --version=$(VersionNumber) --output="$(TargetDir)\Applets\org.santedb.admin.pak"
-      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\config.init" --version=$(VersionNumber) --output="$(TargetDir)\Applets\org.santedb.config.init.pak"
-      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\config" --version=$(VersionNumber) --output="$(TargetDir)\Applets\org.santedb.config.pak"
-      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\core" --version=$(VersionNumber) --output="$(TargetDir)\Applets\org.santedb.core.pak"
-      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\uicore" --version=$(VersionNumber) --output="$(TargetDir)\Applets\org.santedb.uicore.pak"
-      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\bicore" --version=$(VersionNumber) --output="$(TargetDir)\Applets\org.santedb.bicore.pak"
-      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\locales\en" --version=$(VersionNumber) --output="$(TargetDir)\Applets\org.santedb.i18n.en.pak"
-      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\sante-guard\applet" --version=$(VersionNumber) --output="$(TargetDir)\Applets\org.santesuite.sg.pak"
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\admin" --version=$(VersionNumber) --output="$(TargetDir)\Applets\org.santedb.admin.pak" --sign  --certHash=f3bea1ee156254656669f00c03eeafe8befc4441 --embedcert
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\config.init" --version=$(VersionNumber) --output="$(TargetDir)\Applets\org.santedb.config.init.pak" --sign --certHash=f3bea1ee156254656669f00c03eeafe8befc4441 --embedcert
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\config" --version=$(VersionNumber) --output="$(TargetDir)\Applets\org.santedb.config.pak" --sign --certHash=f3bea1ee156254656669f00c03eeafe8befc4441 --embedcert
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\core" --version=$(VersionNumber) --output="$(TargetDir)\Applets\org.santedb.core.pak" --sign --certHash=f3bea1ee156254656669f00c03eeafe8befc4441 --embedcert
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\uicore" --version=$(VersionNumber) --output="$(TargetDir)\Applets\org.santedb.uicore.pak" --sign --certHash=f3bea1ee156254656669f00c03eeafe8befc4441 --embedcert
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\bicore" --version=$(VersionNumber) --output="$(TargetDir)\Applets\org.santedb.bicore.pak" --sign --certHash=f3bea1ee156254656669f00c03eeafe8befc4441 --embedcert
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\locales\en" --version=$(VersionNumber) --output="$(TargetDir)\Applets\org.santedb.i18n.en.pak" --sign --certHash=f3bea1ee156254656669f00c03eeafe8befc4441 --embedcert
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\locales\fr" --version=$(VersionNumber) --output="$(TargetDir)\Applets\org.santedb.i18n.fr.pak" --sign --certHash=f3bea1ee156254656669f00c03eeafe8befc4441 --embedcert
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\locales\sw" --version=$(VersionNumber) --output="$(TargetDir)\Applets\org.santedb.i18n.sw.pak" --sign --certHash=f3bea1ee156254656669f00c03eeafe8befc4441 --embedcert
+      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\locales\es" --version=$(VersionNumber) --output="$(TargetDir)\Applets\org.santedb.i18n.es.pak" --sign --certHash=f3bea1ee156254656669f00c03eeafe8befc4441 --embedcert
       copy "$(SolutionDir)\Solution Items\libeay32md.dll" "$(TargetDir)"
       copy "$(SolutionDir)\Solution Items\SqlCipher.dll" "$(TargetDir)"
       copy "$(SolutionDir)\Solution Items\SqlCipher.dll" "$(TargetDir)\sqlite3.dll"
@@ -163,7 +165,6 @@
       "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\uicore" --version=$(VersionNumber) --output="$(TargetDir)\Applets\org.santedb.uicore.pak"
       "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\bicore" --version=$(VersionNumber) --output="$(TargetDir)\Applets\org.santedb.bicore.pak"
       "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\applets\locales\en" --version=$(VersionNumber) --output="$(TargetDir)\Applets\org.santedb.i18n.en.pak"
-      "c:\Program Files\SanteSuite\SanteDB\SDK\pakman.exe" --compile --source="$(SolutionDir)..\sante-guard\applet" --version=$(VersionNumber) --output="$(TargetDir)\Applets\org.santesuite.sg.pak"
       copy "$(SolutionDir)\Solution Items\libeay32md.dll" "$(TargetDir)"
       copy "$(SolutionDir)\Solution Items\SqlCipher.dll" "$(TargetDir)"
       copy "$(SolutionDir)\Solution Items\SqlCipher.dll" "$(TargetDir)\sqlite3.dll"
