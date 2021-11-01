@@ -38,10 +38,10 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: ".\bin\SignedRelease\*.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\Applets\*.pak"; DestDir: "{app}\Applets"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\santedb-www.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\SignedRelease\santedb-www.exe.config"; DestDir: "{app}"; Flags: ignoreversion
+Source: ".\bin\Release\*.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: ".\bin\Release\Applets\*.pak"; DestDir: "{app}\Applets"; Flags: ignoreversion
+Source: ".\bin\Release\santedb-www.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: ".\bin\Release\santedb-www.exe.config"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\installsupp\vcredist_x86.exe"; DestDir: "{tmp}"; Flags: dontcopy;
 Source: ".\installsupp\netfx.exe"; DestDir: "{tmp}"; Flags: dontcopy;
 
