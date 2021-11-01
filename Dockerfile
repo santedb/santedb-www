@@ -2,7 +2,7 @@
 FROM mono
 MAINTAINER "SanteSuite Contributors"
 RUN mkdir /santedb
-COPY ./bin/SignedRelease/ /santedb/
+COPY ./bin/Release/ /santedb/
 # RUN mv -vf /santedb/Data/*.dataset /santedb/data/
 # RUN rm -rf /santedb/Data
 WORKDIR /santedb
