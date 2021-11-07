@@ -20,6 +20,7 @@
 
 using MohawkCollege.Util.Console.Parameters;
 using Mono.Unix;
+using Mono.Unix.Native;
 using SanteDB.Core.Configuration;
 using SanteDB.Core.Diagnostics;
 using SanteDB.Core.Model.Security;
@@ -168,8 +169,8 @@ namespace santedb_www
                     if (!DcApplicationContext.StartContext(new ConsoleDialogProvider(), $"www-{parms.InstanceName}", applicationIdentity, SanteDB.Core.SanteDBHostType.Other))
                         DcApplicationContext.StartTemporary(new ConsoleDialogProvider(), $"www-{parms.InstanceName}", applicationIdentity, SanteDB.Core.SanteDBHostType.Configuration);
 
-                    DcApplicationContext.Current.Configuration.GetSection<ApplicationServiceContextConfigurationSection>().AppSettings.RemoveAll(o => o.Key == "http.bypassMagic");
-                    DcApplicationContext.Current.Configuration.GetSection<ApplicationServiceContextConfigurationSection>().AppSettings.Add(new AppSettingKeyValuePair() { Key = "http.bypassMagic", Value = DcApplicationContext.Current.ExecutionUuid.ToString() });
+                    DcApplicationContext.Current.Configuration.GetSection<ApplicationServiceContextConfigurationSection>()?.AppSettings?.RemoveAll(o => o.Key == "http.bypassMagic");
+                    DcApplicationContext.Current.Configuration.GetSection<ApplicationServiceContextConfigurationSection>()?.AppSettings?.Add(new AppSettingKeyValuePair() { Key = "http.bypassMagic", Value = DcApplicationContext.Current.ExecutionUuid.ToString() });
 
                     if (!parms.Forever)
                     {
@@ -184,6 +185,7 @@ namespace santedb_www
                             // Wait until cancel key is pressed
                             var mre = new ManualResetEventSlim(false);
                             Console.CancelKeyPress += (o, e) => mre.Set();
+                            DcApplicationContext.Current.Stopped += (o, e) => mre.Set();
                             mre.Wait();
                         }
                         else
@@ -196,12 +198,32 @@ namespace santedb_www
                                 new UnixSignal(Mono.Unix.Native.Signum.SIGQUIT),
                                 new UnixSignal(Mono.Unix.Native.Signum.SIGHUP)
                             };
+
+                            DcApplicationContext.Current.Stopped += (o, e) =>
+                            {
+                                Console.WriteLine("Service has stopped, will send SIGHUP to self for restart");
+                                Syscall.kill(Syscall.getpid(), Signum.SIGHUP);
+                            };
+
                             Console.WriteLine("Started - Send SIGINT, SIGTERM, SIGQUIT or SIGHUP to PID {0} to terminate", Process.GetCurrentProcess().Id);
                             int signal = UnixSignal.WaitAny(signals);
                         }
                     }
+
                     Console.WriteLine("Received termination signal...");
-                    DcApplicationContext.Current.Stop();
+                    if (DcApplicationContext.Current?.IsRunning == true)
+                    {
+                        DcApplicationContext.Current.Stop();
+                    }
+                    else
+                    {
+                        // Service stopped the context so we want to restart
+                        Console.WriteLine("Will restart context, waiting for main teardown in 5 seconds...");
+                        var pi = new ProcessStartInfo(typeof(Program).Assembly.Location, string.Join(" ", args));
+                        pi.UseShellExecute = true;
+                        Process.Start(pi);
+                        Environment.Exit(0);
+                    }
                 }
                 else if (parms.Install)
                 {
