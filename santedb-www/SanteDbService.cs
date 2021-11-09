@@ -1,22 +1,23 @@
 ﻿/*
  * Portions Copyright 2015-2019 Mohawk College of Applied Arts and Technology
  * Portions Copyright 2019-2019 SanteSuite Contributors (See NOTICE)
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you 
- * may not use this file except in compliance with the License. You may 
- * obtain a copy of the License at 
- * 
- * http://www.apache.org/licenses/LICENSE-2.0 
- * 
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you
+ * may not use this file except in compliance with the License. You may
+ * obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the 
- * License for the specific language governing permissions and limitations under 
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
  * the License.
- * 
+ *
  * User: Justin Fyfe
  * Date: 2019-8-8
  */
+
 using SanteDB.Core.Model.Security;
 using SanteDB.DisconnectedClient.Configuration;
 using SanteDB.DisconnectedClient.UI;
@@ -39,6 +40,8 @@ namespace santedb_www
 {
     public partial class SanteDbService : ServiceBase
     {
+        private bool m_serviceStop = false;
+
         // THe application identity
         private SecurityApplication m_applicationIdentity;
 
@@ -50,6 +53,17 @@ namespace santedb_www
             InitializeComponent();
             this.m_applicationIdentity = applicationIdentity;
             this.ServiceName = instanceName;
+        }
+
+        /// <summary>
+        /// Run the application host (moved here to allow for auto-restart)
+        /// </summary>
+        private void RunApplication(string[] args)
+        {
+            if (!DcApplicationContext.StartContext(new ConsoleDialogProvider(), $"www-{this.ServiceName}", this.m_applicationIdentity, SanteDBHostType.Other))
+                DcApplicationContext.StartTemporary(new ConsoleDialogProvider(), $"www-{this.ServiceName}", this.m_applicationIdentity, SanteDBHostType.Other);
+            DcApplicationContext.Current.Configuration.GetSection<ApplicationServiceContextConfigurationSection>().AppSettings.RemoveAll(o => o.Key == "http.bypassMagic");
+            DcApplicationContext.Current.Configuration.GetSection<ApplicationServiceContextConfigurationSection>().AppSettings.Add(new AppSettingKeyValuePair() { Key = "http.bypassMagic", Value = DcApplicationContext.Current.ExecutionUuid.ToString() });
         }
 
         /// <summary>
@@ -65,12 +79,15 @@ namespace santedb_www
                     Trace.TraceInformation(">>> PROGRESS >>> {0} : {1:#0%}", e.ProgressText, e.Progress);
                 };
 
-                if (!DcApplicationContext.StartContext(new ConsoleDialogProvider(), $"www-{this.ServiceName}", this.m_applicationIdentity, SanteDBHostType.Other))
-                    DcApplicationContext.StartTemporary(new ConsoleDialogProvider(), $"www-{this.ServiceName}", this.m_applicationIdentity, SanteDBHostType.Other);
-                DcApplicationContext.Current.Configuration.GetSection<ApplicationServiceContextConfigurationSection>().AppSettings.RemoveAll(o => o.Key == "http.bypassMagic");
-                DcApplicationContext.Current.Configuration.GetSection<ApplicationServiceContextConfigurationSection>().AppSettings.Add(new AppSettingKeyValuePair() { Key = "http.bypassMagic", Value = DcApplicationContext.Current.ExecutionUuid.ToString() });
+                ApplicationServiceContext.Current.Stopped += (o, e) =>
+                {
+                    if (!this.m_serviceStop)
+                    {
+                        this.RunApplication(args);
+                    }
+                };
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Trace.TraceError("The service reported an error: {0}", e);
                 EventLog.WriteEntry("SanteDB Portal Process", $"Service Startup reported an error: {e}", EventLogEntryType.Error, 1911);
@@ -86,9 +103,10 @@ namespace santedb_www
             try
             {
                 Trace.TraceInformation("Stopping Service");
+                this.m_serviceStop = true;
                 DcApplicationContext.Current.Stop();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 EventLog.WriteEntry("SanteDB Portal Process", $"Service Shutdown reported an error: {e}", EventLogEntryType.Error, 1911);
                 Trace.TraceError("The service reported an error: {0}", e);

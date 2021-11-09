@@ -35,7 +35,7 @@ echo Will use MSBUILD in %msbuild%
 
 	%msbuild%\msbuild santedb-www.sln /t:clean /p:VersionNumber=%version%
 	%msbuild%\msbuild santedb-www.sln /t:restore /p:VersionNumber=%version%
-	%msbuild%\msbuild santedb-www.sln /t:rebuild /p:configuration=SignedRelease /m:1 /p:VersionNumber=%version%
+	%msbuild%\msbuild santedb-www.sln /t:rebuild /p:configuration=Release /m:1 /p:VersionNumber=%version%
 
 	FOR /R "%cwd%\bin\SignedRelease" %%G IN (*.exe) DO (
 		echo Signing %%G
