@@ -79,6 +79,8 @@ namespace santedb_www
                     Trace.TraceInformation(">>> PROGRESS >>> {0} : {1:#0%}", e.ProgressText, e.Progress);
                 };
 
+                RunApplication(args);
+
                 ApplicationServiceContext.Current.Stopped += (o, e) =>
                 {
                     if (!this.m_serviceStop)
