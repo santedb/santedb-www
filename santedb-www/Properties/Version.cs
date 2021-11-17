@@ -8,7 +8,12 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+<<<<<<< HEAD
 [assembly: System.Reflection.AssemblyFileVersion("2.1.117")]
 [assembly: System.Reflection.AssemblyVersion("2.1.117")]
+=======
+[assembly: System.Reflection.AssemblyFileVersion("2.1.118")]
+[assembly: System.Reflection.AssemblyVersion("2.1.118")]
+>>>>>>> 43f761b5c7249ce0a8a3f4fcc1409c9102c4aaa5
 
 
