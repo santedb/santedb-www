@@ -85,7 +85,9 @@ namespace santedb_www
                 {
                     if (!this.m_serviceStop)
                     {
-                        this.RunApplication(args);
+                        var pi = new ProcessStartInfo(typeof(Program).Assembly.Location, $"--restart --name={this.ServiceName}");
+                        Process.Start(pi);
+                        Environment.Exit(0);
                     }
                 };
             }
