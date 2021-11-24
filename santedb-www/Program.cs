@@ -210,7 +210,7 @@ namespace santedb_www
                         }
                     }
 
-                    Console.WriteLine("Received termination signal...");
+                    Console.WriteLine($"Received termination signal... {DcApplicationContext.Current?.IsRunning}");
                     if (DcApplicationContext.Current?.IsRunning == true)
                     {
                         DcApplicationContext.Current.Stop();
@@ -251,6 +251,31 @@ namespace santedb_www
                         ServiceTools.ServiceInstaller.Uninstall(serviceName);
                     else
                         throw new InvalidOperationException("Service instance not installed");
+                }
+                else if (parms.Restart)
+                {
+                    string serviceName = $"sdb-www-{parms.InstanceName}";
+                    if (ServiceTools.ServiceInstaller.ServiceIsInstalled(serviceName))
+                    {
+                        Console.Write("Stopping {0}...", serviceName);
+                        var niter = 0;
+                        ServiceTools.ServiceInstaller.StopService(serviceName);
+                        while (ServiceTools.ServiceInstaller.GetServiceStatus(serviceName) != ServiceTools.ServiceState.Stop && niter < 10)
+                        {
+                            Thread.Sleep(1000);
+                            Console.Write(".");
+                            niter++;
+                        }
+                        Console.Write("\r\nStarting {0}...", serviceName);
+                        ServiceTools.ServiceInstaller.StartService(serviceName);
+                        while (ServiceTools.ServiceInstaller.GetServiceStatus(serviceName) != ServiceTools.ServiceState.Run && niter < 20)
+                        {
+                            Thread.Sleep(1000);
+                            Console.Write(".");
+                            niter++;
+                        }
+                        Console.WriteLine("Restart Complete");
+                    }
                 }
                 else
                 {
