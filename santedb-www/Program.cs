@@ -172,6 +172,7 @@ namespace santedb_www
                     DcApplicationContext.Current.Configuration.GetSection<ApplicationServiceContextConfigurationSection>()?.AppSettings?.RemoveAll(o => o.Key == "http.bypassMagic");
                     DcApplicationContext.Current.Configuration.GetSection<ApplicationServiceContextConfigurationSection>()?.AppSettings?.Add(new AppSettingKeyValuePair() { Key = "http.bypassMagic", Value = DcApplicationContext.Current.ExecutionUuid.ToString() });
 
+                    bool restartService = false;
                     if (!parms.Forever)
                     {
                         Console.WriteLine("Press [Enter] key to close...");
@@ -202,6 +203,7 @@ namespace santedb_www
                             DcApplicationContext.Current.Stopped += (o, e) =>
                             {
                                 Console.WriteLine("Service has stopped, will send SIGHUP to self for restart");
+                                restartService = true;
                                 Syscall.kill(Syscall.getpid(), Signum.SIGHUP);
                             };
 
@@ -211,7 +213,7 @@ namespace santedb_www
                     }
 
                     Console.WriteLine($"Received termination signal... {DcApplicationContext.Current?.IsRunning}");
-                    if (DcApplicationContext.Current?.IsRunning == true)
+                    if (DcApplicationContext.Current?.IsRunning == true && !restartService)
                     {
                         DcApplicationContext.Current.Stop();
                     }
