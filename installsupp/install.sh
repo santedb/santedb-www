@@ -93,6 +93,7 @@ $SUDO mkdir -p $INSTALL_ROOT
 
 echo "Copying Files"
 $SUDO cp -rf * $INSTALL_ROOT
+$SUDO certmgr -add -c -m CA inter.cer
 
 read_yesno "Do you want me to install SanteDB Web Access Gateway as a daemon?" daemon
 
