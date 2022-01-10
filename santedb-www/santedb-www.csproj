@@ -67,6 +67,7 @@
     <Compile Include="Configuration\PublicHttpPortConfigurationProvider.cs" />
     <Compile Include="ConsoleDialogProvider.cs" />
     <Compile Include="ConsoleParameters.cs" />
+    <Compile Include="Properties\Version.cs" />
     <Compile Include="ServiceInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
