@@ -105,8 +105,8 @@ Description=SanteDB dCDR Web Access Gateway
 [Service]
 Type=simple
 RemainAfterExit=yes
-PIDFile=/var/run/santedb-www.pid
-ExecStart=/usr/bin/mono-service -l:/var/run/santedb-www.pid -d:$INSTALL_ROOT $INSTALL_ROOT/santedb-www.exe --daemon --console --dllForce
+PIDFile=/run/santedb-www.pid
+ExecStart=/usr/bin/mono-service -l:/run/santedb-www.pid -d:$INSTALL_ROOT $INSTALL_ROOT/santedb-www.exe --daemon --console --dllForce
 ExecStop=kill -HUP $MAINPID
 
 [Install]
