@@ -108,13 +108,13 @@ Type=simple
 RemainAfterExit=yes
 PIDFile=/run/santedb-www.pid
 ExecStart=/usr/bin/mono-service -l:/run/santedb-www.pid -d:$INSTALL_ROOT $INSTALL_ROOT/santedb-www.exe --daemon --console --dllForce
-ExecStop=kill -HUP $MAINPID
+ExecStop=kill -sKILL $MAINPID
 
 [Install]
 WantedBy=multi-user.target
 EOF
 
-    $SUDO mv /tmp/santedb.service /etc/systemd/system/santedb-www.service
+    $SUDO mv /tmp/santedb-www.service /etc/systemd/system/santedb-www.service
 
     read_yesno "Do you want SanteDB Web Access Gateway to start when the system starts?" autostart
     if [[ "$autostart" =~ ^[Yy]$ ]]
