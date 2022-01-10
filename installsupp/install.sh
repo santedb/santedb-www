@@ -4,8 +4,6 @@
 declare INSTALL_ROOT='/opt/santesuite/santedb/www'
 declare SUDO=''
 
-set -o history -o histexpand 
-
 exit_on_error() {
     exit_code=$1
     last_command=${@:2}
@@ -39,6 +37,8 @@ install_mono() {
     fi
 }
 
+
+set -o history -o histexpand 
 
 if (( $EUID != 0 )); then
     read_yesno "You don't appear to be running this script as root, do you mind if I use sudo?" useSudo
