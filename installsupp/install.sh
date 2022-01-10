@@ -4,6 +4,8 @@
 declare INSTALL_ROOT='/opt/santesuite/santedb/www'
 declare SUDO=''
 
+set -o history -o histexpand 
+
 exit_on_error() {
     exit_code=$1
     last_command=${@:2}
@@ -31,13 +33,12 @@ install_mono() {
     if [[ "$install" =~ ^[nN]$ ]]; then 
         echo "Won't install mono - SanteDB may not work properly!"
     else
-        $SUDO apt install -y mono-complete
-        exit_on_error $? !!
+		$SUDO apt update
+        $SUDO apt install -y mono-complete || exit_on_error $? !!
         echo "Mono installed"
     fi
 }
 
-set -o history -o histexpand 
 
 if (( $EUID != 0 )); then
     read_yesno "You don't appear to be running this script as root, do you mind if I use sudo?" useSudo
@@ -128,7 +129,10 @@ EOF
 
     STOP SANTEDB: 
     systemctl stop santedb-www
+	
+	Visit http://127.0.0.1:9200 to configure SanteDB Web Access Gateway
     "
+	$SUDO systemctl start santedb-www
 else 
 
     echo -e "\n
@@ -140,6 +144,8 @@ else
 
     STOP SANTEDB: 
     kill \`cat /tmp/santedb-www.exe.lock\`
+	
+	Visit http://127.0.0.1:9200 to configure SanteDB Web Access Gateway
     "
 
 fi
