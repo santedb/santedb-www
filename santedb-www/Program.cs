@@ -21,13 +21,17 @@
 using MohawkCollege.Util.Console.Parameters;
 using Mono.Unix;
 using Mono.Unix.Native;
+using SanteDB.Client.Batteries;
+using SanteDB.Client.Configuration;
+using SanteDB.Client.Configuration.Upstream;
+using SanteDB.Client.Rest;
+using SanteDB.Core;
 using SanteDB.Core.Configuration;
 using SanteDB.Core.Diagnostics;
+using SanteDB.Core.Diagnostics.Tracing;
 using SanteDB.Core.Model.Security;
-using SanteDB.DisconnectedClient;
-using SanteDB.DisconnectedClient.Diagnostics;
-using SanteDB.DisconnectedClient.Security;
-using SanteDB.DisconnectedClient.UI;
+using SanteDB.Core.Services;
+using SanteDB.Core.Services.Impl;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -63,24 +67,29 @@ namespace santedb_www
 
             // Output copyright info
             var entryAsm = Assembly.GetEntryAssembly();
-            Console.WriteLine("SanteDB Disconnected Server (SanteDB) {0} ({1})", entryAsm.GetName().Version, entryAsm.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion);
+            Console.WriteLine("SanteDB Disconnected Web Host (SanteDB) {0} ({1})", entryAsm.GetName().Version, entryAsm.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion);
             Console.WriteLine("{0}", entryAsm.GetCustomAttribute<AssemblyCopyrightAttribute>().Copyright);
             Console.WriteLine("Complete Copyright information available at http://github.com/santedb/santedb-www");
 
             // Parameters to force load?
+            var dllFiles = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Sante*.dll");
             if (parms.Force)
-                foreach (var itm in Directory.GetFiles(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "*.dll"))
+            {
+                dllFiles = dllFiles.Union(Directory.GetFiles(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "*.dll")).ToArray();
+            }
+
+            foreach (var itm in dllFiles)
+            {
+                try
                 {
-                    try
-                    {
-                        var asm = Assembly.LoadFile(itm);
-                        Console.WriteLine("Force Loaded {0}", asm.FullName);
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine("ERR: Cannot load {0} due to {1}", itm, e.Message);
-                    }
+                    var asm = Assembly.LoadFile(itm);
+                    Console.WriteLine("Force Loaded {0}", asm.FullName);
                 }
+                catch (Exception e)
+                {
+                    Console.WriteLine("ERR: Cannot load {0} due to {1}", itm, e.Message);
+                }
+            }
 
             AppDomain.CurrentDomain.AssemblyResolve += (o, e) =>
             {
@@ -101,30 +110,6 @@ namespace santedb_www
                 else if (!EventLog.SourceExists("SanteDB"))
                     EventLog.CreateEventSource("SanteDB", "santedb-www");
 
-                // Security Application Information
-                var applicationIdentity = new SecurityApplication()
-                {
-                    Key = Guid.Parse("a0d2e3c5-a2d3-11ea-ad9f-00155d4f0905"),
-                    ApplicationSecret = parms.ApplicationSecret ?? "SDB$$DEFAULT$$APPSECRET",
-                    Name = parms.ApplicationName ?? "org.santedb.disconnected_client"
-                };
-
-                // Setup basic parameters
-                String[] directory = {
-                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SanteDBWWW", parms.InstanceName),
-                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SanteDBWWW", parms.InstanceName)
-                };
-
-                foreach (var dir in directory)
-                    if (!Directory.Exists(dir))
-                        Directory.CreateDirectory(dir);
-
-                // Token validator
-                TokenValidationManager.SymmetricKeyValidationCallback += (o, k, i) =>
-                {
-                    Trace.TraceError("Trust issuer {0} failed", i);
-                    return false;
-                };
                 ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, error) =>
                 {
                     if (certificate == null || chain == null)
@@ -140,6 +125,15 @@ namespace santedb_www
                     }
                 };
 
+                // Different binding port?
+                if (String.IsNullOrEmpty(parms.BaseUrl))
+                {
+                    parms.BaseUrl = "http://127.0.0.1:9200";
+                }
+
+                AppDomain.CurrentDomain.SetData(RestServiceInitialConfigurationProvider.BINDING_BASE_DATA, parms.BaseUrl);
+
+
                 if (parms.ShowHelp)
                     parser.WriteHelp(Console.Out);
                 else if (parms.Reset)
@@ -154,25 +148,16 @@ namespace santedb_www
                 else if (parms.ConsoleMode)
                 {
 #if DEBUG
-                    Tracer.AddWriter(new LogTraceWriter(System.Diagnostics.Tracing.EventLevel.LogAlways, "SanteDB.data", new Dictionary<String, EventLevel>()), System.Diagnostics.Tracing.EventLevel.LogAlways);
+                    Tracer.AddWriter(new ConsoleTraceWriter(EventLevel.Informational, "SanteDB.Data", new Dictionary<String, EventLevel>()), EventLevel.Informational);
 #else
-                    Tracer.AddWriter(new LogTraceWriter(System.Diagnostics.Tracing.EventLevel.Informational, "SanteDB.data", new Dictionary<String, EventLevel>()), System.Diagnostics.Tracing.EventLevel.LogAlways);
+                    Tracer.AddWriter(new ConsoleTraceWriter(EventLevel.Warning, "SanteDB.Data", new Dictionary<String, EventLevel>()), EventLevel.Warning);
 #endif
                     Trace.Listeners.Add(new ConsoleTraceListener());
-                    ApplicationContext.ProgressChanged += (o, e) =>
-                    {
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.WriteLine(">>> PROGRESS >>> {0} : {1:#0%}", e.ProgressText, e.Progress);
-                        Console.ResetColor();
-                    };
 
-                    if (!DcApplicationContext.StartContext(new ConsoleDialogProvider(), $"www-{parms.InstanceName}", applicationIdentity, SanteDB.Core.SanteDBHostType.Other))
-                        DcApplicationContext.StartTemporary(new ConsoleDialogProvider(), $"www-{parms.InstanceName}", applicationIdentity, SanteDB.Core.SanteDBHostType.Configuration);
+                    var context = CreateContext(parms);
 
-                    DcApplicationContext.Current.Configuration.GetSection<ApplicationServiceContextConfigurationSection>()?.AppSettings?.RemoveAll(o => o.Key == "http.bypassMagic");
-                    DcApplicationContext.Current.Configuration.GetSection<ApplicationServiceContextConfigurationSection>()?.AppSettings?.Add(new AppSettingKeyValuePair() { Key = "http.bypassMagic", Value = DcApplicationContext.Current.ExecutionUuid.ToString() });
+                    ServiceUtil.Start(Guid.NewGuid(), context);
 
-                    bool restartService = false;
                     if (!parms.Forever)
                     {
                         Console.WriteLine("Press [Enter] key to close...");
@@ -185,8 +170,10 @@ namespace santedb_www
                         {
                             // Wait until cancel key is pressed
                             var mre = new ManualResetEventSlim(false);
+                            // Application requested a restart
+                            ApplicationServiceContext.Current.Stopped += (o, e) => mre.Set();
+                            // User requested a stop
                             Console.CancelKeyPress += (o, e) => mre.Set();
-                            DcApplicationContext.Current.Stopped += (o, e) => mre.Set();
                             mre.Wait();
                         }
                         else
@@ -200,10 +187,9 @@ namespace santedb_www
                                 new UnixSignal(Mono.Unix.Native.Signum.SIGHUP)
                             };
 
-                            DcApplicationContext.Current.Stopped += (o, e) =>
+                            ApplicationServiceContext.Current.Stopped += (o, e) =>
                             {
                                 Console.WriteLine("Service has stopped, will send SIGHUP to self for restart");
-                                restartService = true;
                                 Syscall.kill(Syscall.getpid(), Signum.SIGHUP);
                             };
 
@@ -212,20 +198,9 @@ namespace santedb_www
                         }
                     }
 
-                    Console.WriteLine($"Received termination signal... {DcApplicationContext.Current?.IsRunning}");
-                    if (DcApplicationContext.Current?.IsRunning == true && !restartService)
-                    {
-                        DcApplicationContext.Current.Stop();
-                    }
-                    else
-                    {
-                        // Service stopped the context so we want to restart
-                        Console.WriteLine("Will restart context, waiting for main teardown in 5 seconds...");
-                        var pi = new ProcessStartInfo(typeof(Program).Assembly.Location, string.Join(" ", args));
-                        pi.UseShellExecute = true;
-                        Process.Start(pi);
-                        Environment.Exit(0);
-                    }
+                    Console.WriteLine($"Received termination signal...");
+                    ServiceUtil.Stop();
+
                 }
                 else if (parms.Install)
                 {
@@ -285,7 +260,7 @@ namespace santedb_www
                     ServiceBase[] ServicesToRun;
                     ServicesToRun = new ServiceBase[]
                     {
-                        new SanteDbService(parms.InstanceName, applicationIdentity)
+                        new SanteDbService(parms.InstanceName, CreateContext(parms))
                     };
                     ServiceBase.Run(ServicesToRun);
                     Trace.TraceInformation("Started As Windows Service...");
@@ -303,6 +278,48 @@ namespace santedb_www
 #endif
                 Environment.Exit(911);
             }
+        }
+
+        /// <summary>
+        /// Create context
+        /// </summary>
+        private static IApplicationServiceContext CreateContext(ConsoleParameters parms)
+        {
+            var configDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "santedb", "www", parms.InstanceName);
+            var dataDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "santedb", "www", parms.InstanceName);
+            if (!Directory.Exists(dataDirectory))
+            {
+                Directory.CreateDirectory(dataDirectory);
+            }
+            if (!Directory.Exists(configDirectory))
+            {
+                Directory.CreateDirectory(configDirectory);
+            }
+
+            // Security Application Information
+            var applicationIdentity = new UpstreamCredentialConfiguration()
+            {
+                Conveyance = UpstreamCredentialConveyance.Secret,
+                CredentialName = parms.ApplicationName ?? "org.santedb.disconnected_client",
+                CredentialSecret = parms.ApplicationSecret ?? "SDB$$DEFAULT$$APPSECRET",
+                CredentialType = UpstreamCredentialType.Application
+            };
+
+            ClientBatteries.Initialize(dataDirectory, configDirectory, applicationIdentity);
+            // Establish a configuration environment 
+            IConfigurationManager configurationManager = null;
+            var configurationFile = Path.Combine(configDirectory, "santedb.config");
+            if (File.Exists(configurationFile))
+            {
+                configurationManager = new FileConfigurationService(configurationFile, true);
+            }
+            else
+            {
+                configurationManager = new InitialConfigurationManager(SanteDBHostType.Gateway, parms.InstanceName, configurationFile);
+            }
+
+
+            return new WebApplicationContext(parms, configurationManager);
         }
     }
 }
