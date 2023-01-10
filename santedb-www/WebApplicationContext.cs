@@ -23,6 +23,7 @@ namespace santedb_www
         /// <inheritdoc/>
         public WebApplicationContext(ConsoleParameters debugParameters, IConfigurationManager configurationManager) : base(SanteDBHostType.Gateway, debugParameters.InstanceName, configurationManager)
         {
+            this.m_consoleParameters = debugParameters;
         }
 
         /// <inheritdoc/>

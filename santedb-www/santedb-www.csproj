@@ -123,9 +123,6 @@
     <PackageReference Include="SanteDB.Client.Batteries">
       <Version>$(VersionNumber)</Version>
     </PackageReference>
-	<PackageReference Include="SanteDB.Client.MDM">
-      <Version>$(VersionNumber)</Version>
-    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
