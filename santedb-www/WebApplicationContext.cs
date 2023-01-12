@@ -37,13 +37,14 @@ namespace santedb_www
             if (this.m_consoleParameters.ConsoleMode)
             {
                 var pi = new ProcessStartInfo(typeof(Program).Assembly.Location, string.Join(" ", this.m_consoleParameters.ToArgumentList()));
-                Process.Start(pi).WaitForExit(5000);
+                Process.Start(pi);
             }
             else
             {
                 var pi = new ProcessStartInfo(typeof(Program).Assembly.Location, "--restart");
-                Process.Start(pi).WaitForExit(5000);
+                Process.Start(pi);
             }
+            Thread.Sleep(1000);
 
         }
     }
