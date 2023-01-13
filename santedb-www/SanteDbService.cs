@@ -60,18 +60,7 @@ namespace santedb_www
         {
             try
             {
-
                 ServiceUtil.Start(Guid.NewGuid(), this.m_applicationServiceContext);
-                 
-                ApplicationServiceContext.Current.Stopped += (o, e) =>
-                {
-                    if (!this.m_serviceStop)
-                    {
-                        var pi = new ProcessStartInfo(typeof(Program).Assembly.Location, $"--restart --name={this.ServiceName}");
-                        Process.Start(pi);
-                        Environment.Exit(0);
-                    }
-                };
             }
             catch (Exception e)
             {
