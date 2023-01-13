@@ -41,7 +41,7 @@ namespace santedb_www
             }
             else
             {
-                var pi = new ProcessStartInfo(typeof(Program).Assembly.Location, "--restart");
+                var pi = new ProcessStartInfo(typeof(Program).Assembly.Location, $"--restart --name={this.m_consoleParameters.InstanceName}");
                 Process.Start(pi);
             }
             Thread.Sleep(1000);
