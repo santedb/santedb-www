@@ -1,6 +1,7 @@
 ﻿using SanteDB.Client;
 using SanteDB.Client.Configuration;
 using SanteDB.Core;
+using SanteDB.Core.Applets.Model;
 using SanteDB.Core.Applets.Services;
 using SanteDB.Core.Diagnostics;
 using SanteDB.Core.Services;
@@ -56,15 +57,7 @@ namespace santedb_www
             // Delay fire - allow other objects to finish up on the restart request event
             this.m_restartRequested = true;
 
-            if(this.m_configurationManager is InitialConfigurationManager &&
-                this.m_configurationManager.GetSection<ClientConfigurationSection>().AutoUpdateApplets) // we need to uninstall the default applets and let the update do the magic
-            {
-                var appService = this.GetService<IAppletManagerService>();
-                foreach(var app in appService.Applets.ToArray())
-                {
-                    appService.UnInstall(app.Info.Id);
-                }
-            }
+            
             ServiceUtil.Stop();
             Environment.Exit(0);
         }
