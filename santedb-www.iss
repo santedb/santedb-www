@@ -4,6 +4,9 @@
 #define MyAppName "SanteDB Web Portal Host"
 #define MyAppPublisher "SanteDB Community"
 #define MyAppURL "http://santesuite.org"
+#ifndef MyAppVersion
+#define MyAppVersion "3.0"
+#endif
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -42,7 +45,7 @@ Source: ".\bin\Release\*.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\bin\Release\Applets\*.pak"; DestDir: "{app}\Applets"; Flags: ignoreversion
 Source: ".\bin\Release\santedb-www.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\bin\Release\santedb-www.exe.config"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\installsupp\vcredist_x86.exe"; DestDir: "{tmp}"; Flags: dontcopy;
+Source: ".\installsupp\VC_redist.x64.exe"; DestDir: "{tmp}"; Flags: dontcopy;
 Source: ".\installsupp\netfx.exe"; DestDir: "{tmp}"; Flags: dontcopy;
 
 [Icons]
@@ -70,8 +73,8 @@ begin
     EnableFsRedirection(true);
     WizardForm.PreparingLabel.Visible := True;
     WizardForm.PreparingLabel.Caption := 'Installing Visual C++ Redistributable';
-    ExtractTemporaryFile('vcredist_x86.exe');
-    Exec(ExpandConstant('{tmp}\vcredist_x86.exe'), '/install /passive /norestart', '', SW_SHOW, ewWaitUntilTerminated, ResultCode);
+    ExtractTemporaryFile('VC_redist.x64.exe');
+    Exec(ExpandConstant('{tmp}\VC_redist.x64.exe'), '/install /passive /norestart', '', SW_SHOW, ewWaitUntilTerminated, ResultCode);
     WizardForm.PreparingLabel.Caption := 'Installing Microsoft .NET Framework 4.8';
      ExtractTemporaryFile('netfx.exe');
     Exec(ExpandConstant('{tmp}\netfx.exe'), '/q', '', SW_SHOW, ewWaitUntilTerminated, ResultCode);

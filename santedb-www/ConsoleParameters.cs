@@ -115,5 +115,45 @@ namespace santedb_www
         [Description("Restart the running service control")]
         [Parameter("restart")]
         public bool Restart { get; internal set; }
+
+        [Parameter("base")]
+        [Description("Allows for the changing of the base URL (default is http://127.0.0.1)")]
+        public string BaseUrl { get; set; }
+
+        /// <summary>
+        /// Convert this object back to an argument list
+        /// </summary>
+        internal IEnumerable<String> ToArgumentList()
+        {
+            if (!String.IsNullOrEmpty(this.InstanceName))
+            {
+                yield return $"--name=\"{this.InstanceName}\"";
+            }
+            if (this.Force)
+            {
+                yield return "--force";
+            }
+            if (this.ConsoleMode)
+            {
+                yield return "--console";
+            }
+            if (this.Forever)
+            {
+                yield return "--daemon";
+            }
+            if (!String.IsNullOrEmpty(this.BaseUrl))
+            {
+                yield return $"--base=\"{this.BaseUrl}\"";
+            }
+            if (!String.IsNullOrEmpty(this.ApplicationName))
+            {
+                yield return $"--appname=\"{this.ApplicationName}\"";
+            }
+            if (!String.IsNullOrEmpty(this.ApplicationSecret))
+            {
+                yield return $"--appsecret=\"{this.ApplicationSecret}\"";
+            }
+            
+        }
     }
 }

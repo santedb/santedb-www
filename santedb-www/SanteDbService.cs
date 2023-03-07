@@ -19,8 +19,6 @@
  */
 
 using SanteDB.Core.Model.Security;
-using SanteDB.DisconnectedClient.Configuration;
-using SanteDB.DisconnectedClient.UI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -34,7 +32,6 @@ using SanteDB.Core.Configuration;
 using SanteDB.Core;
 using SanteDB.Core.Services;
 using System.Security.Principal;
-using SanteDB.DisconnectedClient;
 
 namespace santedb_www
 {
@@ -43,27 +40,16 @@ namespace santedb_www
         private bool m_serviceStop = false;
 
         // THe application identity
-        private SecurityApplication m_applicationIdentity;
+        private readonly IApplicationServiceContext m_applicationServiceContext;
 
         /// <summary>
         /// SanteDB Service
         /// </summary>
-        public SanteDbService(string instanceName, SecurityApplication applicationIdentity)
+        public SanteDbService(string instanceName, IApplicationServiceContext applicationServiceContext)
         {
             InitializeComponent();
-            this.m_applicationIdentity = applicationIdentity;
-            this.ServiceName = instanceName;
-        }
-
-        /// <summary>
-        /// Run the application host (moved here to allow for auto-restart)
-        /// </summary>
-        private void RunApplication(string[] args)
-        {
-            if (!DcApplicationContext.StartContext(new ConsoleDialogProvider(), $"www-{this.ServiceName}", this.m_applicationIdentity, SanteDBHostType.Other))
-                DcApplicationContext.StartTemporary(new ConsoleDialogProvider(), $"www-{this.ServiceName}", this.m_applicationIdentity, SanteDBHostType.Other);
-            DcApplicationContext.Current.Configuration.GetSection<ApplicationServiceContextConfigurationSection>().AppSettings.RemoveAll(o => o.Key == "http.bypassMagic");
-            DcApplicationContext.Current.Configuration.GetSection<ApplicationServiceContextConfigurationSection>().AppSettings.Add(new AppSettingKeyValuePair() { Key = "http.bypassMagic", Value = DcApplicationContext.Current.ExecutionUuid.ToString() });
+            this.m_applicationServiceContext = applicationServiceContext;
+            this.ServiceName = $"SanteDB Web Host {instanceName}";
         }
 
         /// <summary>
@@ -74,22 +60,7 @@ namespace santedb_www
         {
             try
             {
-                ApplicationContext.ProgressChanged += (o, e) =>
-                {
-                    Trace.TraceInformation(">>> PROGRESS >>> {0} : {1:#0%}", e.ProgressText, e.Progress);
-                };
-
-                RunApplication(args);
-
-                ApplicationServiceContext.Current.Stopped += (o, e) =>
-                {
-                    if (!this.m_serviceStop)
-                    {
-                        var pi = new ProcessStartInfo(typeof(Program).Assembly.Location, $"--restart --name={this.ServiceName}");
-                        Process.Start(pi);
-                        Environment.Exit(0);
-                    }
-                };
+                ServiceUtil.Start(Guid.NewGuid(), this.m_applicationServiceContext);
             }
             catch (Exception e)
             {
@@ -108,7 +79,7 @@ namespace santedb_www
             {
                 Trace.TraceInformation("Stopping Service");
                 this.m_serviceStop = true;
-                DcApplicationContext.Current.Stop();
+                ServiceUtil.Stop();
             }
             catch (Exception e)
             {
