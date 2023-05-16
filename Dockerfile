@@ -1,5 +1,6 @@
 ﻿# SanteDB Server Dockerfile  
-FROM mono
+FROM mono:latest
+RUN apt-get clean
 MAINTAINER "SanteSuite Contributors"
 RUN mkdir /santedb
 COPY ./bin/Release/ /santedb/

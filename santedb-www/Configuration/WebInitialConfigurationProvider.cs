@@ -30,17 +30,10 @@ namespace santedb_www.Configuration
             var appSection = existing.GetSection<ApplicationServiceContextConfigurationSection>();
             appSection.ServiceProviders.RemoveAll(o => o.Type.Implements(typeof(IUserInterfaceInteractionProvider)));
 
-            if (Environment.GetCommandLineArgs().Any(o=>o.Equals("--console")))
-            {
-                appSection.ServiceProviders.Add(new TypeReferenceConfiguration(typeof(SanteDB.Client.UserInterface.Impl.ConsoleUserInterfaceInteractionProvider)));
-            }
-            else
-            {
-                appSection.ServiceProviders.Add(new TypeReferenceConfiguration(typeof(SanteDB.Client.UserInterface.Impl.TracerUserInterfaceInteractionProvider)));
-            }
+            appSection.ServiceProviders.Add(new TypeReferenceConfiguration(typeof(SanteDB.Client.UserInterface.Impl.TracerUserInterfaceInteractionProvider)));
             appSection.ServiceProviders.Add(new TypeReferenceConfiguration(typeof(SanteDB.Client.UserInterface.WebAppletHostBridgeProvider)));
             var agsSection = existing.GetSection<RestConfigurationSection>();
-            if(agsSection != null)
+            if (agsSection != null)
             {
 #if !DEBUG
                 foreach(var service in agsSection.Services)
