@@ -29,7 +29,7 @@ WizardStyle=modern
 ;SignedUninstaller=yes
 ;SignTool=default
 SignedUninstaller=yes
-SignTool=default sign /a /n $qFyfe Software$q /d $q{#MyAppName}$q $f
+SignTool=default /a /n $qFyfe Software$q /d $q{#MyAppName}$q $f
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
