@@ -286,7 +286,17 @@ namespace santedb_www
         private static IApplicationServiceContext CreateContext(ConsoleParameters parms)
         {
             var configDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "santedb", "www", parms.InstanceName);
+            // Does the config or data directory point to WinDir
+            if(configDirectory.Contains(Environment.GetFolderPath(Environment.SpecialFolder.Windows)))
+            {
+                configDirectory = Path.Combine(Path.GetDirectoryName(typeof(Program).Assembly.Location), "instances", parms.InstanceName);
+            }
             var dataDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "santedb", "www", parms.InstanceName);
+            if (dataDirectory.Contains(Environment.GetFolderPath(Environment.SpecialFolder.Windows)))
+            {
+                dataDirectory = Path.Combine(Path.GetDirectoryName(typeof(Program).Assembly.Location), "instances", parms.InstanceName);
+            }
+
             if (!Directory.Exists(dataDirectory))
             {
                 Directory.CreateDirectory(dataDirectory);
