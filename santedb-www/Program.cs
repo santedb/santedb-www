@@ -301,8 +301,8 @@ namespace santedb_www
             // Running as system?
             if(configDirectory.Contains(Environment.GetFolderPath(Environment.SpecialFolder.Windows)))
             {
-                configDirectory = Path.Combine(Path.GetDirectoryName(typeof(Program).Assembly.Location), parms.InstanceName, "config");
-                dataDirectory = Path.Combine(Path.GetDirectoryName(typeof(Program).Assembly.Location), parms.InstanceName, "data");
+                configDirectory = Path.Combine(Path.GetDirectoryName(typeof(Program).Assembly.Location), "instances", parms.InstanceName, "config");
+                dataDirectory = Path.Combine(Path.GetDirectoryName(typeof(Program).Assembly.Location), "instances", parms.InstanceName, "data");
             }
 
             Trace.TraceInformation("Configuration Directory: {0}", configDirectory);
