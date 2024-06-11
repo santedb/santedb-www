@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 namespace santedb_www
 {
     /// <summary>
-    /// Debugger application context
+    /// WWW application context
     /// </summary>
     internal class WebApplicationContext : ClientApplicationContextBase
     {

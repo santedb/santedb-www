@@ -285,6 +285,8 @@ namespace santedb_www
         /// </summary>
         private static IApplicationServiceContext CreateContext(ConsoleParameters parms)
         {
+            ServicePointManager.DefaultConnectionLimit = Environment.ProcessorCount;
+
             var configDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "santedb", "www", parms.InstanceName);
             // Does the config or data directory point to WinDir
             if(configDirectory.Contains(Environment.GetFolderPath(Environment.SpecialFolder.Windows)))
