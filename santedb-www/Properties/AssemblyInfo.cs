@@ -30,7 +30,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("santedb-www")]
-[assembly: AssemblyCopyright("Copyright (C) 2020-2021 SanteSuite Contributors (see NOTICE)")]
+[assembly: AssemblyCopyright("Copyright (C) 2020-2024 SanteSuite Contributors (see NOTICE)")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

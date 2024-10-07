@@ -2,10 +2,12 @@
 using SanteDB.Client.Configuration;
 using SanteDB.Client.UserInterface;
 using SanteDB.Core;
+using SanteDB.Core.Applets.Configuration;
 using SanteDB.Core.Configuration;
 using SanteDB.Rest.Common.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,6 +32,13 @@ namespace santedb_www.Configuration
             var appSection = existing.GetSection<ApplicationServiceContextConfigurationSection>();
             appSection.ServiceProviders.RemoveAll(o => o.Type.Implements(typeof(IUserInterfaceInteractionProvider)));
 
+
+#if DEBUG
+            // TODO: Git Submodules would eliminate this
+            appSection.AllowUnsignedAssemblies = true;
+            var appletSection = existing.GetSection<AppletConfigurationSection>();
+            appletSection.AllowUnsignedApplets = true;
+#endif
             appSection.ServiceProviders.Add(new TypeReferenceConfiguration(typeof(SanteDB.Client.UserInterface.Impl.TracerUserInterfaceInteractionProvider)));
             appSection.ServiceProviders.Add(new TypeReferenceConfiguration(typeof(SanteDB.Client.UserInterface.WebAppletHostBridgeProvider)));
             var agsSection = existing.GetSection<RestConfigurationSection>();

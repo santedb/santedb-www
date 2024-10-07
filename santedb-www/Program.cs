@@ -104,11 +104,18 @@ namespace santedb_www
 
             try
             {
-                // Detect platform
-                if (System.Environment.OSVersion.Platform != PlatformID.Win32NT)
-                    Trace.TraceWarning("Not running on WindowsNT, some features may not function correctly");
-                else if (!EventLog.SourceExists("SanteDB"))
-                    EventLog.CreateEventSource("SanteDB", "santedb-www");
+                try
+                {
+                    // Detect platform
+                    if (System.Environment.OSVersion.Platform != PlatformID.Win32NT)
+                        Trace.TraceWarning("Not running on WindowsNT, some features may not function correctly");
+                    else if (!EventLog.SourceExists("SanteDB"))
+                        EventLog.CreateEventSource("SanteDB", "santedb-www");
+                }
+                catch(Exception e)
+                {
+                    Trace.TraceWarning("Cannot detect Windows Event Log {0}", e);
+                }
 
                 ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, error) =>
                 {
@@ -132,7 +139,7 @@ namespace santedb_www
                 }
 
                 AppDomain.CurrentDomain.SetData(RestServiceInitialConfigurationProvider.BINDING_BASE_DATA, parms.BaseUrl);
-
+                Trace.TraceInformation("Binding to {0}", AppDomain.CurrentDomain.GetData(RestServiceInitialConfigurationProvider.BINDING_BASE_DATA));
 
                 if (parms.ShowHelp)
                     parser.WriteHelp(Console.Out);
@@ -212,6 +219,8 @@ namespace santedb_www
                             argList += $" --appname=\"{parms.ApplicationName}\"";
                         if (!String.IsNullOrEmpty(parms.ApplicationSecret))
                             argList += $" --appsecret=\"{parms.ApplicationSecret}\"";
+                        if (!String.IsNullOrEmpty(parms.BaseUrl))
+                            argList += $" --base=\"{parms.BaseUrl}\"";
 
                         ServiceTools.ServiceInstaller.Install(
                             serviceName, $"SanteDB WWW ({parms.InstanceName})",
@@ -285,8 +294,19 @@ namespace santedb_www
         /// </summary>
         private static IApplicationServiceContext CreateContext(ConsoleParameters parms)
         {
+
             var configDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "santedb", "www", parms.InstanceName);
             var dataDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "santedb", "www", parms.InstanceName);
+
+            // Running as system?
+            if(configDirectory.Contains(Environment.GetFolderPath(Environment.SpecialFolder.Windows)))
+            {
+                configDirectory = Path.Combine(Path.GetDirectoryName(typeof(Program).Assembly.Location), "instances", parms.InstanceName, "config");
+                dataDirectory = Path.Combine(Path.GetDirectoryName(typeof(Program).Assembly.Location), "instances", parms.InstanceName, "data");
+            }
+
+            Trace.TraceInformation("Configuration Directory: {0}", configDirectory);
+            Trace.TraceInformation("Data Directory: {0}", dataDirectory);
             if (!Directory.Exists(dataDirectory))
             {
                 Directory.CreateDirectory(dataDirectory);
