@@ -40,7 +40,7 @@ WizardStyle=modern
 ;SignedUninstaller=yes
 ;SignTool=default
 SignedUninstaller=yes
-SignTool=default /sha1 {#SignKey} {#SignOpts} /d $qSanteDB iCDR Server$q $f
+SignTool=default /sha1 {#SignKey} {#SignOpts} /d $qSanteDB dCDR WWW Server$q $f
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"

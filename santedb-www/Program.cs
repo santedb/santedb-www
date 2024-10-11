@@ -21,6 +21,7 @@
 using MohawkCollege.Util.Console.Parameters;
 using Mono.Unix;
 using Mono.Unix.Native;
+using SanteDB;
 using SanteDB.Client.Batteries;
 using SanteDB.Client.Configuration;
 using SanteDB.Client.Configuration.Upstream;
@@ -67,7 +68,7 @@ namespace santedb_www
 
             // Output copyright info
             var entryAsm = Assembly.GetEntryAssembly();
-            Console.WriteLine("SanteDB Disconnected Web Host (SanteDB) {0} ({1})", entryAsm.GetName().Version, entryAsm.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion);
+            Console.WriteLine("SanteDB Disconnected Web Host (SanteDB-WWW) {0} ({1})", entryAsm.GetName().Version, entryAsm.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion);
             Console.WriteLine("{0}", entryAsm.GetCustomAttribute<AssemblyCopyrightAttribute>().Copyright);
             Console.WriteLine("Complete Copyright information available at http://github.com/santedb/santedb-www");
 
@@ -114,7 +115,7 @@ namespace santedb_www
                 }
                 catch(Exception e)
                 {
-                    Trace.TraceWarning("Cannot detect Windows Event Log {0}", e);
+                    Trace.TraceWarning("Cannot detect Windows Event Log {0}", e.ToHumanReadableString());
                 }
 
                 ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, error) =>
@@ -145,8 +146,8 @@ namespace santedb_www
                     parser.WriteHelp(Console.Out);
                 else if (parms.Reset)
                 {
-                    var appData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SanteDB", parms.InstanceName);
-                    var cData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SanteDB", parms.InstanceName);
+                    var appData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SanteDB", "www", parms.InstanceName);
+                    var cData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SanteDB", "www", parms.InstanceName);
                     if (Directory.Exists(appData)) Directory.Delete(cData, true);
                     if (Directory.Exists(appData)) Directory.Delete(appData, true);
                     Console.WriteLine("Environment Reset Successful");

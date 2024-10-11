@@ -119,7 +119,7 @@ EOF
     read_yesno "Do you want SanteDB Web Access Gateway to start when the system starts?" autostart
     if [[ "$autostart" =~ ^[Yy]$ ]]
     then 
-        $SUDO systemctl enable santedb
+        $SUDO systemctl enable santedb-www
     fi
 
     echo -e "\n
