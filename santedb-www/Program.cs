@@ -321,7 +321,7 @@ namespace santedb_www
             var applicationIdentity = new UpstreamCredentialConfiguration()
             {
                 Conveyance = UpstreamCredentialConveyance.Secret,
-                CredentialName = parms.ApplicationName ?? "org.santedb.disconnected_client",
+                CredentialName = parms.ApplicationName ?? "org.santedb.disconnected_client.www",
                 CredentialSecret = parms.ApplicationSecret ?? "SDB$$DEFAULT$$APPSECRET",
                 CredentialType = UpstreamCredentialType.Application
             };
