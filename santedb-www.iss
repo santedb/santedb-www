@@ -50,7 +50,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: ".\bin\Release\*.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\Release\Applets\*.pak"; DestDir: "{app}\Applets"; Flags: ignoreversion
+Source: ".\bin\Release\Applets\*.pak"; DestDir: "{app}\Applets"; Flags: ignoreversion; Excludes: org.santedb.admin.pak;
 Source: ".\bin\Release\santedb-www.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\bin\Release\santedb-www.exe.config"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\installsupp\VC_redist.x64.exe"; DestDir: "{tmp}"; Flags: dontcopy;
