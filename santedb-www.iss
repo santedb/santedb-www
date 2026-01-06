@@ -49,10 +49,10 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: ".\bin\Release\*.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\Release\Applets\*.pak"; DestDir: "{app}\Applets"; Flags: ignoreversion; Excludes: org.santedb.admin.pak;
-Source: ".\bin\Release\santedb-www.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".\bin\Release\santedb-www.exe.config"; DestDir: "{app}"; Flags: ignoreversion
+Source: ".\bin\Release\net48\*.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: ".\bin\Release\net48\Applets\*.pak"; DestDir: "{app}\Applets"; Flags: ignoreversion; Excludes: org.santedb.admin.pak;
+Source: ".\bin\Release\net48\santedb-www.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: ".\bin\Release\net48\santedb-www.exe.config"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\installsupp\VC_redist.x64.exe"; DestDir: "{tmp}"; Flags: dontcopy;
 Source: ".\installsupp\netfx.exe"; DestDir: "{tmp}"; Flags: dontcopy;
 
