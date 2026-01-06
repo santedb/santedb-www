@@ -48,6 +48,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+[assembly: AssemblyCopyright("Copyright (C) 2015-2026 SanteSuite Inc. and the SanteSuite Contributors (See NOTICE.md)")]
+
 namespace santedb_www
 {
     /// <summary>
