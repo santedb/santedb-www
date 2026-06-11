@@ -12,6 +12,8 @@
       <AssemblyName>santedb-www</AssemblyName>
       <BaseOutputPath>../bin</BaseOutputPath>
       <ApplicationIcon>icon.ico</ApplicationIcon>
+	  <Product>SanteDB WWW Server</Product>
+	  <InformationalVersion>Chippewa</InformationalVersion>
       <Company>santedb-www</Company>
       <Title>santedb-www</Title>
   </PropertyGroup>
