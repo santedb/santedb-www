@@ -3,7 +3,7 @@ FROM mono:latest
 RUN apt-get clean
 MAINTAINER "SanteSuite Contributors"
 RUN mkdir /santedb
-COPY ./bin/Release/ /santedb/
+COPY ./bin/Release/net48 /santedb/
 # RUN mv -vf /santedb/Data/*.dataset /santedb/data/
 # RUN rm -rf /santedb/Data
 WORKDIR /santedb
