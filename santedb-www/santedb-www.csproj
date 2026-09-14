@@ -1,40 +1,41 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <VersionNumber Condition="'$(VersionNumber)'==''">3.0.0-debug</VersionNumber>
-    <VersionNumberInfo Condition="$(VersionNumber.Contains('-'))">$(VersionNumber.Substring(0, $(VersionNumber.IndexOf('-'))))</VersionNumberInfo>
-    <VersionNumberInfo Condition="!$(VersionNumber.Contains('-'))">$(VersionNumber)</VersionNumberInfo>
-    <Version>$(VersionNumber)</Version>
+    <VersionNumber Condition="'$(VersionNumber)'==''">3.1.0-debug</VersionNumber>
   </PropertyGroup>
   <PropertyGroup>
-      <TargetFramework>net48</TargetFramework>
-      <OutputType>Exe</OutputType>
-      <RootNamespace>santedb_www</RootNamespace>
-      <AssemblyName>santedb-www</AssemblyName>
-      <BaseOutputPath>../bin</BaseOutputPath>
-      <ApplicationIcon>icon.ico</ApplicationIcon>
-	  <Product>SanteDB WWW Server</Product>
-	  <InformationalVersion>Chippewa</InformationalVersion>
-      <Company>santedb-www</Company>
-      <Title>santedb-www</Title>
+    <TargetFrameworks>net10.0;net48</TargetFrameworks>
+    <OutputType>Exe</OutputType>
+    <Version>$(VersionNumber)</Version>
+    <RootNamespace>santedb_www</RootNamespace>
+    <AssemblyName>santedb-www</AssemblyName>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <Product>SanteDB WWW Server</Product>
+    <InformationalVersion>Chippewa</InformationalVersion>
+    <Title>SanteDB WWW Portal</Title>
+    <Copyright>Copyright (C) 2015-2026 SanteSuite Inc. and the SanteSuite Contributors (See NOTICE.md)</Copyright>
+    <Company>SanteSuite Contributors</Company>
+    <Description>SanteDB World Wide Web Portal Server</Description>
   </PropertyGroup>
   <ItemGroup>
-      <Reference Include="MohawkCollege.Util.Console.Parameters">
-          <HintPath>..\Solution Items\MohawkCollege.Util.Console.Parameters.dll</HintPath>
-      </Reference>
-      <Reference Include="System.Configuration.Install" />
-      <Reference Include="System.Data.DataSetExtensions" />
-      <Reference Include="System.Management" />
-      <Reference Include="System.ServiceProcess" />
+    <Reference Include="MohawkCollege.Util.Console.Parameters">
+      <HintPath>..\Solution Items\MohawkCollege.Util.Console.Parameters.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Management" />
+    <Reference Include="System.ServiceProcess" />
   </ItemGroup>
   <ItemGroup>
-      <PackageReference Include="Mono.Posix-4.5" Version="4.5.0" />
-      <PackageReference Include="SanteDB.Client" Version="$(VersionNumber)" />
-      <PackageReference Include="SanteDB.Matcher" Version="$(VersionNumber)" />
-      <PackageReference Include="SanteDB.Client.Batteries" Version="$(VersionNumber)" />
-      <PackageReference Include="System.Memory" Version="4.6.3" />
-      <PackageReference Include="SharpCompress" Version="0.50.0" />
+    <PackageReference Include="Mono.Posix-4.5" Version="4.5.0" />
+    <PackageReference Include="SanteDB.Client" Version="$(VersionNumber)" />
+    <PackageReference Include="SanteDB.Matcher" Version="$(VersionNumber)" />
+    <PackageReference Include="SanteDB.Client.Batteries" Version="$(VersionNumber)" />
+    <PackageReference Include="System.Memory" Version="4.6.3" />
+    <PackageReference Include="SharpCompress" Version="0.50.4" />
+    <PackageReference Include="System.ServiceProcess.ServiceController" Version="[10.0.3,11)" />
   </ItemGroup>
   <ItemGroup>
-      <None Include="..\SanteDB.licenseheader" Link="SanteDB.licenseheader" />
+    <None Include="..\SanteDB.licenseheader" Link="SanteDB.licenseheader" />
+    <None Include="..\License.rtf" Link="License.rtf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

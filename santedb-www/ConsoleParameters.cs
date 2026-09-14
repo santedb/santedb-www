@@ -21,6 +21,7 @@
 using MohawkCollege.Util.Console.Parameters;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -119,6 +120,13 @@ namespace santedb_www
         [Parameter("base")]
         [Description("Allows for the changing of the base URL (default is http://127.0.0.1)")]
         public string BaseUrl { get; set; }
+
+        /// <summary>
+        /// Load extensions
+        /// </summary>
+        [Parameter("load")]
+        [Description("Load extensions into the WWW host")]
+        public StringCollection LoadExtensions { get; set; }
 
         /// <summary>
         /// Convert this object back to an argument list

@@ -1,6 +1,7 @@
 ﻿/*
- * Portions Copyright 2015-2019 Mohawk College of Applied Arts and Technology
- * Portions Copyright 2019-2019 SanteSuite Contributors (See NOTICE)
+ * Copyright (C) 2021 - 2026, SanteSuite Inc. and the SanteSuite Contributors (See NOTICE.md for full copyright notices)
+ * Portions Copyright (C) 2019 - 2021, Fyfe Software Inc. and the SanteSuite Contributors
+ * Portions Copyright (C) 2015-2018 Mohawk College of Applied Arts and Technology
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you
  * may not use this file except in compliance with the License. You may
@@ -14,8 +15,6 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  *
- * User: Justin Fyfe
- * Date: 2019-8-8
  */
 
 using System;
@@ -23,6 +22,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Runtime.InteropServices;
 
+// Inspired from: https://gist.github.com/FusRoDah061/d04dc0bbed890ba0e93166da2b62451e
 namespace ServiceTools
 {
     /// <summary>

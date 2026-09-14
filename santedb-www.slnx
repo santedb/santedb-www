@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+    <File Path="CONTRIBUTING.md" />
+    <File Path="Directory.Build.props" />
+    <File Path="Dockerfile" />
+    <File Path="LICENSE" />
+    <File Path="License.rtf" />
+    <File Path="NOTICE.md" />
+    <File Path="README.md" />
+    <File Path="release-version" />
+    <File Path="Solution Items/MohawkCollege.Util.Console.Parameters.dll" />
+  </Folder>
+  <Project Path="santedb-www/santedb-www.csproj" />
+</Solution>

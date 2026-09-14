@@ -1,6 +1,7 @@
 ﻿/*
- * Portions Copyright 2015-2019 Mohawk College of Applied Arts and Technology
- * Portions Copyright 2019-2019 SanteSuite Contributors (See NOTICE)
+ * Copyright (C) 2021 - 2026, SanteSuite Inc. and the SanteSuite Contributors (See NOTICE.md for full copyright notices)
+ * Portions Copyright (C) 2019 - 2021, Fyfe Software Inc. and the SanteSuite Contributors
+ * Portions Copyright (C) 2015-2018 Mohawk College of Applied Arts and Technology
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you
  * may not use this file except in compliance with the License. You may
@@ -48,7 +49,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-[assembly: AssemblyCopyright("Copyright (C) 2015-2026 SanteSuite Inc. and the SanteSuite Contributors (See NOTICE.md)")]
 
 namespace santedb_www
 {
@@ -63,6 +63,10 @@ namespace santedb_www
         /// </summary>
         private static void Main(String[] args)
         {
+#if NET10_0_OR_GREATER
+            AppContext.SetSwitch("Switch.System.Xml.IgnoreObsoleteMembers", true); //See https://learn.microsoft.com/en-us/dotnet/core/compatibility/serialization/10/xmlserializer-obsolete-properties
+#endif
+
             // Output main header
             var parser = new ParameterParser<ConsoleParameters>();
             var parms = parser.Parse(args);
@@ -73,9 +77,11 @@ namespace santedb_www
 
             // Output copyright info
             var entryAsm = Assembly.GetEntryAssembly();
-            Console.WriteLine("SanteDB Disconnected Web Host (SanteDB-WWW) {0} ({1})", entryAsm.GetName().Version, entryAsm.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion);
+            Console.WriteLine("SanteDB WWW Portal (SanteDB-WWW) {0} ({1})", entryAsm.GetName().Version, entryAsm.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion);
             Console.WriteLine("{0}", entryAsm.GetCustomAttribute<AssemblyCopyrightAttribute>().Copyright);
+            Console.WriteLine(".NET Runtime {0}", System.Runtime.InteropServices.RuntimeEnvironment.GetSystemVersion());
             Console.WriteLine("Complete Copyright information available at http://github.com/santedb/santedb-www");
+            Console.WriteLine("Current Directory: {0}", Environment.CurrentDirectory);
 
             // Parameters to force load?
             var dllFiles = Directory.GetFiles(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Sante*.dll");
@@ -96,6 +102,9 @@ namespace santedb_www
                     Console.WriteLine("ERR: Cannot load {0} due to {1}", itm, e.Message);
                 }
             }
+
+            // Are there any third party libraries to load?
+            LoadExtensions(parms);
 
             AppDomain.CurrentDomain.AssemblyResolve += (o, e) =>
             {
@@ -346,6 +355,54 @@ namespace santedb_www
 
 
             return new WebApplicationContext(parms, configurationManager);
+        }
+
+        /// <summary>
+        /// Loads extensions specified in the command line.
+        /// </summary>
+        /// <param name="parameters">The parsed command line parameters with the extensions.</param>
+        private static bool LoadExtensions(ConsoleParameters parameters)
+        {
+            if (parameters.LoadExtensions?.Count > 0)
+            {
+                foreach (var ext in parameters.LoadExtensions)
+                {
+                    var itm = ext;
+                    if (!Path.IsPathRooted(itm))
+                    {
+                        itm = Path.Combine(Path.GetDirectoryName(typeof(Program).Assembly.Location), itm);
+                    }
+
+                    if (File.Exists(itm))
+                    {
+                        Console.WriteLine("Loading {0}...", itm); // TODO: Use System.Diagnostics.Tracer
+                        Assembly.LoadFile(itm);
+                    }
+                    else if (itm.Contains("*"))
+                    {
+                        var directoryName = Path.GetDirectoryName(itm);
+                        if (!Directory.Exists(directoryName))
+                        {
+                            directoryName = Path.GetDirectoryName(directoryName);
+                        }
+                        foreach (var fil in Directory.GetFiles(directoryName, Path.GetFileName(itm)))
+                        {
+                            Console.WriteLine("Loading {0}...", fil); // TODO: Use System.Diagnostics.Tracer
+                            Assembly.LoadFile(fil);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("{0} does not exist", itm);
+                    }
+                }
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
