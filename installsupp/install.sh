@@ -3,6 +3,7 @@
 
 declare INSTALL_ROOT='/opt/santesuite/santedb/www'
 declare SUDO=''
+declare AUTO_START=0
 
 exit_on_error() {
     exit_code=$1
@@ -51,6 +52,8 @@ if (( $EUID != 0 )); then
     SUDO='sudo'
 fi
 
+
+
 mono --version || install_mono
 
 echo -e "\n
@@ -88,6 +91,12 @@ then
     $INSTALL_ROOT = $installAlt
 fi
 
+if [ -f /run/santedb-www.pid ]; then 
+    echo "Stopping SanteDB WWW Service"
+    $SUDO systemctl stop santedb-www
+    AUTO_START=1
+fi;
+
 echo "Installing at $INSTALL_ROOT"
 $SUDO mkdir -p $INSTALL_ROOT
 
@@ -98,11 +107,16 @@ if [ -f "inter.cer" ]; then
     $SUDO certmgr -add -c -m CA inter.cer
 fi
 
-read_yesno "Do you want me to install SanteDB Web Access Gateway as a daemon?" daemon
 
-if [[ "$daemon" =~ ^[yY]$ ]]
-then 
-    cat > /tmp/santedb-www.service <<EOF
+if (( $AUTO_START != 0 )); then
+    echo "Restarting SanteDB WWW Server"
+    $SUDO systemctl start santedb-www
+else 
+    read_yesno "Do you want me to install SanteDB Web Access Gateway as a daemon?" daemon
+
+    if [[ "$daemon" =~ ^[yY]$ ]]
+    then 
+        cat > /tmp/santedb-www.service <<EOF
 [Unit]
 Description=SanteDB dCDR Web Access Gateway
 
@@ -117,40 +131,41 @@ ExecStop=kill -sKILL $MAINPID
 WantedBy=multi-user.target
 EOF
 
-    $SUDO mv /tmp/santedb-www.service /etc/systemd/system/santedb-www.service
+        $SUDO mv /tmp/santedb-www.service /etc/systemd/system/santedb-www.service
 
-    read_yesno "Do you want SanteDB Web Access Gateway to start when the system starts?" autostart
-    if [[ "$autostart" =~ ^[Yy]$ ]]
-    then 
-        $SUDO systemctl enable santedb-www
+        read_yesno "Do you want SanteDB Web Access Gateway to start when the system starts?" autostart
+        if [[ "$autostart" =~ ^[Yy]$ ]]
+        then 
+            $SUDO systemctl enable santedb-www
+        fi
+
+        echo -e "\n
+
+        SanteDB Web Access Gateway is now installed in $INSTALL_ROOT
+
+        START SANTEDB: 
+        systemctl start santedb-www
+
+        STOP SANTEDB: 
+        systemctl stop santedb-www
+        
+        Visit http://127.0.0.1:9200 to configure SanteDB Web Access Gateway
+        "
+        $SUDO systemctl start santedb-www
+    else 
+
+        echo -e "\n
+
+        SanteDB is now installed in $INSTALL_ROOT
+
+        START SANTEDB: 
+        sudo mono-service -d:$INSTALL_ROOT $INSTALL_ROOT/santedb-www.exe --console --daemon --dllForce
+
+        STOP SANTEDB: 
+        kill \`cat /tmp/santedb-www.exe.lock\`
+        
+        Visit http://127.0.0.1:9200 to configure SanteDB Web Access Gateway
+        "
+
     fi
-
-    echo -e "\n
-
-    SanteDB Web Access Gateway is now installed in $INSTALL_ROOT
-
-    START SANTEDB: 
-    systemctl start santedb-www
-
-    STOP SANTEDB: 
-    systemctl stop santedb-www
-	
-	Visit http://127.0.0.1:9200 to configure SanteDB Web Access Gateway
-    "
-	$SUDO systemctl start santedb-www
-else 
-
-    echo -e "\n
-
-    SanteDB is now installed in $INSTALL_ROOT
-
-    START SANTEDB: 
-    sudo mono-service -d:$INSTALL_ROOT $INSTALL_ROOT/santedb-www.exe --console --daemon --dllForce
-
-    STOP SANTEDB: 
-    kill \`cat /tmp/santedb-www.exe.lock\`
-	
-	Visit http://127.0.0.1:9200 to configure SanteDB Web Access Gateway
-    "
-
 fi
